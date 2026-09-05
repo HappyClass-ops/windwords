@@ -1,14 +1,19 @@
 # Optional follow-up — one prompt
 
 Review the published game at https://happyclass-ops.github.io/windwords/ after the
-adventure release. This is a **review only**, not permission to edit, regenerate,
+scene-and-audio release. This is a **review only**, not permission to edit, regenerate,
 buy anything, clear saves, change API settings or push commits. Core development
 and automated checks are already complete; do not restart the implementation.
 
-Use an iPad/Safari if available. Check: tap-to-walk village entrances; supply-stop
-item inspection and the exit; map scrolling/locks/route descriptions; word pictures
+Use an iPad/Safari if available. Check: destination-only auto-walking with moving
+feet/arms (arrow keys and empty ground should NOT move Pip); painted supply-stop
+items, inspection and exit; Go play defaults to Learning and begins at Sky Islands;
+Map only displays records, locked locations show ???? and paths are chosen at
+checkpoints; return-to-village uses an IN-GAME confirmation. Check word pictures
 and text at portrait/landscape sizes; Pip's cartoon voice clarity and voice/music/
-jump volume balance. Use a fresh browser profile if testing purchases/progression;
+jump volume balance. Listen for different village/shop/map/biome themes and ambience,
+faded transitions, narration ducking, and no old music continuing underneath.
+Use a fresh browser profile if testing purchases/progression;
 never erase the owner's saved stars. If no physical iPad/audio access is available,
 say which checks you could not perform rather than claiming they passed.
 

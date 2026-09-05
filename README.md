@@ -2,9 +2,12 @@
 
 Static game published from the main branch with GitHub Pages.
 
-Now entered through the **Pip's English** village: arrow keys or tap-to-walk to
-the Word book, Map, Supply stop and Go play. The map provides locked stops, route
-records and two scenery choices per region. See [DEVELOPMENT.md](DEVELOPMENT.md)
+Now entered through the **Pip's English** village: choose a destination and Pip
+walks there automatically using an eight-frame walk cycle. Go play offers Learning
+(default) and Classic; every new run starts at Sky Islands. The map is for records,
+with undiscovered locations hidden as ????. Path choices happen at checkpoints.
+The supply stop is a separate scene with six painted treasures to inspect.
+See [DEVELOPMENT.md](DEVELOPMENT.md)
 for the story, exact Classic/Learning rules and reusable module boundaries.
 
 ## Reusable vocabulary
@@ -33,5 +36,8 @@ Browser checks cover all picture URLs, dictionary navigation, duplicate-purchase
 
 Run `npm install`, then `npm test` (Google Chrome installed). Browser tests use
 Playwright locally; speech tests mock the service and consume no credits. No build
-step is needed for GitHub Pages. Generated environment artwork is under 1 MB total;
-word pictures still load only when opened.
+step is needed for GitHub Pages. Environment backdrops remain under 1 MB;
+the new walk/UI/item sheets add compact WebP assets. Word pictures still load only
+when opened. Original local instrumental themes and six pre-generated ElevenLabs
+SFX ambience loops change with scenes, fade on transition, duck for speech and pause
+when the tab is hidden. No Music API subscription or runtime generation is needed.
