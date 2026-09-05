@@ -1,0 +1,8 @@
+{
+  "name": "pips-english-windwords",
+  "private": true,
+  "scripts": {
+    "test": "node tests/voice.cjs && node tests/pip-position.cjs && node tests/adventure.cjs"
+  },
+  "devDependencies": { "playwright": "1.62.1" }
+}

@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#12386d">
   <title>Pip's Wordwind Trail</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="enhancements.css">
   <link rel="stylesheet" href="picture-book.css">
+  <link rel="stylesheet" href="adventure.css">
+  <link rel="icon" href="assets/journey/sky.webp" type="image/webp">
 </head>
 <body>
   <main class="game-shell" id="game" aria-label="Pip's Wordwind Trail grammar game">
@@ -58,6 +60,7 @@
       <div class="word-helper-top"><strong id="helperWord">word</strong><span id="helperKind">noun</span></div>
       <img id="helperImage" width="256" height="256" decoding="async" alt="">
       <p id="helperDefinition"></p><p class="helper-example" id="helperExample"></p>
+      <button id="helperReveal" class="primary-button" type="button" hidden>Reveal word type</button>
       <p id="helperOther"></p><div class="helper-controls"><button id="helperPrev" type="button" aria-label="Previous word">←</button><button id="helperReplay" type="button">Hear again</button><button id="helperNext" type="button" aria-label="Next word">→</button></div>
       <a id="fullDictionaryLink" href="https://happyclass-ops.github.io/prep2-phonics/" target="_blank" rel="noopener">Open the full Prep 2 dictionary ↗</a>
     </aside>
@@ -114,7 +117,7 @@
           <article class="shop-item heart-item"><span class="shop-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 56S8 42 8 23C8 10 25 6 32 18 39 6 56 10 56 23 56 42 32 56 32 56Z"/></svg></span><span class="item-type">Permanent</span><h3>Brave heart</h3><p>Begin every run with one extra heart.</p><button class="buy-button" data-item="heart" type="button">30 stars</button></article>
           <article class="shop-item boots-item"><span class="shop-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M19 8h20v23c0 7 6 10 14 12v11H17c-7 0-11-4-11-10 0-7 7-10 13-11V8Z"/><path d="M15 43h38M27 10v19"/></svg></span><span class="item-type">Permanent</span><h3>Star boots</h3><p>Earn double stars on every correct leap.</p><button class="buy-button" data-item="boots" type="button">60 stars</button></article>
         </div>
-        <p class="shop-explanation">Earn stars for correct leaps and 5 bonus stars per checkpoint. Picture help is always free. Your pack is saved on this device.</p><h3>Make Pip yours</h3><div id="cosmeticGrid" class="shop-grid"></div>
+        <p class="shop-explanation">Earn stars for correct leaps and 5 bonus stars per checkpoint. Pictures are free. Classic has three word-type reveals per run. Learning has free explanations. Your pack is saved on this device.</p><h3>Make Pip yours</h3><div id="cosmeticGrid" class="shop-grid"></div>
         <button class="secondary-button shop-close-wide" id="backToTrailButton" type="button">Back to the trail</button>
       </div>
     </section>
@@ -140,6 +143,9 @@
     <p class="screen-reader-only" id="announcer" aria-live="assertive"></p>
   </main>
   <script src="vocabulary.js"></script>
+  <script src="voice.js"></script>
+  <script src="ambience.js"></script>
+  <script src="adventure.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
