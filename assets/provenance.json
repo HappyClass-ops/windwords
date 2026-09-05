@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "wordCatalogue": "vocabulary.json",
+  "wordCount": 496,
+  "wordImageSize": 256,
+  "localArchive": "../asset-masters",
+  "walk": {"source": "journey/masters/walk.png", "sourceGrid": [4,2], "output": "journey/pip-walk.webp", "outputGrid": [8,1], "cellSize":256,"baseline":248},
+  "items": {"source":"journey/masters/items.png","grid":[3,2],"order":["shield","heart","boots","aqua","sunset","chime"]},
+  "ui": {"source":"journey/masters/ui.png","rectangles":[[0,40,768,425],[768,40,1536,440],[0,450,768,940],[768,500,1536,930]],"order":["sign","gold","parchment","dark"]},
+  "audio": {"ambience":"ElevenLabs Sound Effects v2, 8 second loops","music":"Original local arrangements in soundtrack.js","secrets":"server-side only"}
+}
