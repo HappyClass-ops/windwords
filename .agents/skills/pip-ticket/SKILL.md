@@ -12,6 +12,10 @@ stay backlog. User normally delegates ordinary technical decisions, but this ski
 never creates permission for spending, secret changes or unrelated releases.
 
 Work one approved issue or explicitly approved batch. Record the branch/claim.
+Check the recommended AI first. A different model may take an owner-assigned
+ticket only after notifying the owner BEFORE edits; follow
+docs/agents/model-routing.md. Do not silently relabel the recommendation or bypass
+blocked/design-only scope. Record the actual worker in the claim.
 Keep phase/type/word IDs and teacher-directed Learning assumptions. See the audio
 and asset guides before paid providers or cropping. No automatic image generation.
 
@@ -21,4 +25,3 @@ deployed. Use a stronger model after two failed evidence-based hypotheses, with 
 small reproduction packet. Do not forward the entire conversation or spawn paid
 helpers without authority. Skill availability is optional: the linked plain docs
 are the portable fallback for any AI.
-

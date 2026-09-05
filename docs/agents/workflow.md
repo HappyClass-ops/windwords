@@ -32,6 +32,13 @@ Do not copy node_modules or auth caches between computers.
 
 ## When to use a stronger or cheaper AI
 
+Use docs/agents/model-routing.md and the assigned ticket's ai:* recommendation.
+A different model must notify the owner before editing, then may attempt an
+explicitly assigned unblocked scope. This does not require an extra approval just
+because the model differs; it does not waive cost, access or design-decision gates.
+Actual model/worker belongs in the claim comment, not in a silently changed
+recommendation. Consult docs/QA-2026-09-06.md for the current prioritised queue.
+
 Small isolated label/CSS/data corrections and running existing checks: cheaper
 coding model, if already available. Lifecycle races, currency/save migration,
 pedagogy, auth changes and cross-module design: capable reasoning model.
@@ -55,4 +62,3 @@ Before switching computers: commit and push the working branch, then comment the
 next action on the ticket. On the other computer: fetch, checkout that branch,
 pull --ff-only. If both changed, resolve explicitly; never force-push or reset.
 GitHub syncs source, docs and tickets, NOT browser-saved pupil progress or secrets.
-

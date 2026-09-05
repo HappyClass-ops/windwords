@@ -1,0 +1,438 @@
+{
+  "date": "2026-09-06",
+  "baseline": "de7d9c2",
+  "reports": [
+    {
+      "report": 1,
+      "summary": "Shop effects and checkpoint requirements unclear",
+      "tickets": [
+        17
+      ]
+    },
+    {
+      "report": 2,
+      "summary": "Pip disappears approaching shop",
+      "tickets": [
+        6
+      ]
+    },
+    {
+      "report": 3,
+      "summary": "Shop card hides Pip; odd diagonal movement",
+      "tickets": [
+        20,
+        6
+      ]
+    },
+    {
+      "report": 4,
+      "summary": "Map discoveries and five most-seen words",
+      "tickets": [
+        24,
+        25
+      ]
+    },
+    {
+      "report": 5,
+      "summary": "Word XP / three-level mastery",
+      "tickets": [
+        23
+      ]
+    },
+    {
+      "report": 6,
+      "summary": "Redundant spoken question and repeated fixed audio",
+      "tickets": [
+        16,
+        9
+      ]
+    },
+    {
+      "report": 7,
+      "summary": "Saved stars have no obvious use",
+      "tickets": [
+        17,
+        30
+      ]
+    },
+    {
+      "report": 8,
+      "summary": "Reimagine floor routes and actual doors",
+      "tickets": [
+        6
+      ]
+    },
+    {
+      "report": 9,
+      "summary": "First story line silent",
+      "tickets": [
+        10
+      ]
+    },
+    {
+      "report": 10,
+      "summary": "Story text/Pip/buttons unnecessarily clipped",
+      "tickets": [
+        18
+      ]
+    },
+    {
+      "report": 11,
+      "summary": "Visual ascent and beacon station",
+      "tickets": [
+        27
+      ]
+    },
+    {
+      "report": 12,
+      "summary": "Meaning help separate from two type reveals",
+      "tickets": [
+        15
+      ]
+    },
+    {
+      "report": 13,
+      "summary": "Consecutive repeated spellings",
+      "tickets": [
+        22
+      ]
+    },
+    {
+      "report": 14,
+      "summary": "Picture hint item duplicates free assistance",
+      "tickets": [
+        15
+      ]
+    },
+    {
+      "report": 15,
+      "summary": "Stay on landed island; move camera",
+      "tickets": [
+        26
+      ]
+    },
+    {
+      "report": 16,
+      "summary": "Face the direction of a jump",
+      "tickets": [
+        21
+      ]
+    },
+    {
+      "report": 17,
+      "summary": "trim/nest and other valid classes rejected",
+      "tickets": [
+        13,
+        14
+      ]
+    },
+    {
+      "report": 18,
+      "summary": "Long-term saved-star economy",
+      "tickets": [
+        30
+      ]
+    },
+    {
+      "report": 19,
+      "summary": "Clear return option after completion",
+      "tickets": [
+        19
+      ]
+    },
+    {
+      "report": 20,
+      "summary": "Distinct hard final boss and epic music",
+      "tickets": [
+        33
+      ]
+    },
+    {
+      "report": 21,
+      "summary": "Later phases too easy / words too simple",
+      "tickets": [
+        28
+      ]
+    },
+    {
+      "report": 22,
+      "summary": "Expressive Pip prosody",
+      "tickets": [
+        31,
+        9
+      ]
+    },
+    {
+      "report": 23,
+      "summary": "Remove irrelevant gear announcements",
+      "tickets": [
+        32
+      ]
+    },
+    {
+      "report": 24,
+      "summary": "Harder checkpoints with fair distractors",
+      "tickets": [
+        14,
+        29
+      ]
+    }
+  ],
+  "tickets": [
+    {
+      "key": "homographs",
+      "number": 13,
+      "model": "Sol",
+      "priority": 1,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "distractors",
+      "number": 14,
+      "model": "Sol",
+      "priority": 1,
+      "state": "needs-info",
+      "dependencies": [
+        13
+      ],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "firstline",
+      "number": 10,
+      "model": "Sol",
+      "priority": 1,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "hints",
+      "number": 15,
+      "model": "Astra",
+      "priority": 1,
+      "state": "needs-triage",
+      "dependencies": [],
+      "deliverable": "Design contract, then separately authorized implementation"
+    },
+    {
+      "key": "paths",
+      "number": 6,
+      "model": "Astra",
+      "priority": 1,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation with a small navigation contract first"
+    },
+    {
+      "key": "dialog",
+      "number": 18,
+      "model": "Terra",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "shopcopy",
+      "number": 17,
+      "model": "Terra",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "helpvoice",
+      "number": 16,
+      "model": "Terra",
+      "priority": 2,
+      "state": "needs-info",
+      "dependencies": [
+        15
+      ],
+      "deliverable": "Implementation after help contract"
+    },
+    {
+      "key": "return",
+      "number": 19,
+      "model": "Gemini",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Bounded production copy change"
+    },
+    {
+      "key": "facing",
+      "number": 21,
+      "model": "Sol",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "shopview",
+      "number": 20,
+      "model": "Terra",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "repeats",
+      "number": 22,
+      "model": "Terra",
+      "priority": 2,
+      "state": "needs-info",
+      "dependencies": [
+        14
+      ],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "economy",
+      "number": 30,
+      "model": "Astra",
+      "priority": 2,
+      "state": "needs-triage",
+      "dependencies": [],
+      "deliverable": "Design and simulated economy contract first"
+    },
+    {
+      "key": "message",
+      "number": 32,
+      "model": "Terra",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation using existing speech pipeline"
+    },
+    {
+      "key": "mastery",
+      "number": 23,
+      "model": "Astra",
+      "priority": 2,
+      "state": "needs-triage",
+      "dependencies": [
+        13,
+        15
+      ],
+      "deliverable": "Design contract, then separately authorized implementation"
+    },
+    {
+      "key": "camera",
+      "number": 26,
+      "model": "Astra",
+      "priority": 2,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Implementation with narrow coordinate design first"
+    },
+    {
+      "key": "beaconvisual",
+      "number": 27,
+      "model": "Sol",
+      "priority": 2,
+      "state": "needs-info",
+      "dependencies": [
+        26
+      ],
+      "deliverable": "Implementation"
+    },
+    {
+      "key": "difficulty",
+      "number": 28,
+      "model": "Astra",
+      "priority": 2,
+      "state": "needs-triage",
+      "dependencies": [
+        13,
+        14
+      ],
+      "deliverable": "Design and deterministic challenge specification first"
+    },
+    {
+      "key": "checkpointchallenge",
+      "number": 29,
+      "model": "Sol",
+      "priority": 2,
+      "state": "needs-info",
+      "dependencies": [
+        14,
+        28
+      ],
+      "deliverable": "Implementation after difficulty contract"
+    },
+    {
+      "key": "discoveryproto",
+      "number": 24,
+      "model": "Gemini",
+      "priority": 3,
+      "state": "ready-for-agent",
+      "dependencies": [],
+      "deliverable": "Isolated prototype only"
+    },
+    {
+      "key": "discovery",
+      "number": 25,
+      "model": "Sol",
+      "priority": 3,
+      "state": "needs-info",
+      "dependencies": [
+        23,
+        24
+      ],
+      "deliverable": "Implementation after chosen design"
+    },
+    {
+      "key": "prosody",
+      "number": 31,
+      "model": "Sol",
+      "priority": 3,
+      "state": "needs-triage",
+      "dependencies": [],
+      "deliverable": "Script/direction first; paid audition only with budget approval"
+    },
+    {
+      "key": "boss",
+      "number": 33,
+      "model": "Astra",
+      "priority": 3,
+      "state": "needs-triage",
+      "dependencies": [
+        28,
+        29
+      ],
+      "deliverable": "Boss encounter contract first, then separately authorized build"
+    },
+    {
+      "key": "clips",
+      "number": 9,
+      "model": "Sol",
+      "priority": 3,
+      "state": "needs-info",
+      "dependencies": [
+        10,
+        16,
+        32,
+        31
+      ],
+      "deliverable": "Implementation after scripts and paid-usage approval"
+    },
+    {
+      "key": "wardrobe",
+      "number": 11,
+      "model": "Sol",
+      "priority": 3,
+      "state": "needs-info",
+      "dependencies": [
+        30
+      ],
+      "deliverable": "Implementation after economy contract"
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 # Read only the area you need
 
+Current ticket priorities/24-report map: QA-2026-09-06.md.
+Recommended AI and mismatch protocol: agents/model-routing.md.
+
 | Change | Entry / owner | Guide | Targeted check |
 | --- | --- | --- | --- |
 | Signboards, clouds, paths, shop scene | world.js, world.css | areas/world.md | tests/world.cjs |

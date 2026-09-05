@@ -9,6 +9,10 @@ chat history, every skill, all assets or the entire repository by default.
 - Source: this checkout; origin HappyClass-ops/windwords; main deploys Pages at
   https://happyclass-ops.github.io/windwords/. Other dated checkouts are backups.
 - Start: git status; read docs/STATUS.md (dated snapshot), then the exact ticket.
+  For current QA priorities use docs/QA-2026-09-06.md. Check the ticket's recommended
+  AI versus actual worker; follow docs/agents/model-routing.md. A different AI may
+  attempt an owner-assigned ticket, but must announce the mismatch BEFORE edits.
+  Do not silently change the recommendation; blocked/design-only scope still applies.
   GitHub is authoritative for ticket state. Claim before editing; one writer per
   branch. Never assume an old “in-progress” label means an agent is still running.
 - User permits ordinary technical decisions, requested fixes, tests and publishing.
@@ -31,4 +35,3 @@ Issue tracker: GitHub; docs/agents/issue-tracker.md. Triage vocabulary:
 docs/agents/triage-labels.md. Domain glossary: CONTEXT.md; read only relevant ADRs.
 Area routing: docs/CODE-MAP.md. Optional portable skill: .agents/skills/pip-ticket.
 CLAUDE.md only points here; do not maintain competing instruction copies.
-

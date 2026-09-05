@@ -1,41 +1,40 @@
 # Resume here
 
-Date: 2026-09-06. Baseline: 8984280. Canonical checkout: desktop Pips English/windwords.
-Folder/workflow delivered. WW-002–007 verified; all nine npm test programs pass.
-Code release e8a60ca is deployed; its legacy-heart HUD follow-up also passed the
-targeted world test. Ticket #8 records the final published commit. User moved the
-canonical workspace to OneDrive/Desktop/Pips English; do not recreate the old path.
-GitHub tickets: https://github.com/HappyClass-ops/windwords/issues (WW-NNN maps to #N).
-Shared handbook: https://github.com/HappyClass-ops/pips-english-handbook (private).
+Date: 2026-09-06. Runtime baseline: de7d9c2 (last released gameplay).
+Current turn delivered ticket triage and AI-routing documentation only; NO new
+runtime changes, paid generation or gameplay validation are claimed.
+Canonical workspace: the owner's moved OneDrive/Desktop/Pips English/windwords.
 
-## Work queue
+## Current queue
 
-| Local ID | Outcome | State | Blocked by |
-| --- | --- | --- | --- |
-| WW-001 | Portable workspace, AI instructions and ticket workflow | closed | — |
-| WW-002 | Clean, readable sign lettering | verified | WW-001 |
-| WW-003 | Cloud-covered undiscovered map | verified | WW-001 |
-| WW-004 | Real word meanings in revealed picture help | verified | WW-001 |
-| WW-005 | Pip narration finishes without automatic interruption | verified | WW-001 |
-| WW-006 | Neatly placed shop items and direct walking paths | verified | WW-001 |
-| WW-007 | Useful, understandable Classic checkpoint shop with run stars | verified | WW-006 |
-| WW-008 | Release validation, safe GitHub sync and final handoff | gate passed; live status on #8 | WW-002–007 |
-| WW-009 | Pre-render fixed story clips | later backlog | WW-005 |
-| WW-010 | First story line silent on cold start | later backlog | — |
-| WW-011 | Wardrobe with reversible previews and purchased outfits | later backlog | — |
-| WW-012 | Constrained Gemini prototype kit | closed | WW-001 |
+Read [QA-2026-09-06.md](QA-2026-09-06.md) for all 24 reports, priorities, linked
+tickets and recommended AI. It replaces the old “three tickets left” snapshot.
+GitHub is authoritative: https://github.com/HappyClass-ops/windwords/issues.
 
-Ticket files in docs/tickets are the portable initial briefs. GitHub Issues will
-hold live status/claims once published. This file is a dated restart snapshot,
-not a second independently edited issue tracker.
+- 21 new issues #13–33; #6 reopened for a proper walkable-route/doorway contract.
+- #9/#10 updated rather than duplicated; #11 wardrobe remains linked backlog.
+- Total active triaged set: 25. None is claimed for implementation by this pass.
+- First unblocked fixes: #13 valid homograph marking (Sol), #10 first-line voice
+  (Sol), #6 walkable navigation (Astra). #14 distractor correctness follows #13.
+- Independent small work: #18 story layout (Terra), #17 shop explanations (Terra),
+  #19 Back to village label (Gemini), #21 facing (Sol), #20 shop occlusion (Terra).
+- Help budgets, XP pacing, expanded economy, difficulty and boss design remain
+  explicit proposals. Read their decision gates before implementing them.
 
-## Agreed decisions
+Read AGENTS + exact ticket + relevant area guide, not the entire historic chat.
+Check [model-routing](agents/model-routing.md) before edits. Recommendation is not
+an exclusive assignment; another model must notify the owner first, then may try
+an explicitly assigned scope while respecting blockers/permissions.
 
-- Separate repositories per game; a small shared handbook, not a shared engine.
-- Usually teacher-directed classroom play, not unsupervised solo play.
-- AI may make ordinary technical decisions, fix, test and publish requested work.
-- Ask before extra paid generation/usage, destructive changes or unclear scope.
-- Learning remains the default. Classic gets run-only shop resources; preserve
-  existing lifetime stars/cosmetics without silently deleting purchased history.
-- No paid generation this batch. Use existing sprite sheets and code-native effects.
-- Scope includes the seven reported issues. Extra creative ideas go to optional backlog.
+## Previous release evidence
+
+Runtime de7d9c2 was pushed and Pages verified. Its main code release passed all nine
+test programs; the final legacy-heart follow-up passed the targeted world test.
+See RELEASE-2026-09-06.md and closed #8. Reopening #6 acknowledges gaps in earlier
+path coverage; it does not erase test history or claim those tests covered new QA.
+Shared handbook remains a separate private repo; game source/docs are public.
+
+No pupil identities or cloud mastery records are authorized. Keep Learning gentle
+and teacher-directed; propose Classic changes explicitly. Existing assets/saves
+are preserved. Local issue briefs and triage JSON are dated offline snapshots;
+GitHub owns live state and claims.
