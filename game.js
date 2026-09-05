@@ -30,7 +30,7 @@
     selectedPhase: Math.min(5, Math.max(2, store.read("selectedPhase", 2))),
     unlockedPhase: Math.min(5, Math.max(2, store.read("unlockedPhase", 2))),
     storyIndex: 0, best: store.read("best", 0), coins: store.read("coins", 0),
-    maxHearts: store.read("maxHearts", 3), hearts: 3, shield: store.read("shield", false),
+    maxHearts: 3, hearts: 3, shield: store.read("shield", false),
     boots: store.read("boots", false), includeAdverbs: store.read("includeAdverbs", false),
     targetKind: "noun", previousKind: "", anchor: document.getElementById("startIsland"),
     audioOn: store.read("audioOn", true), bossMode: false, bossRemaining: 0, bossTargetPhase: 3,
