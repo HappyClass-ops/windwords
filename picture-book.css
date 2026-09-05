@@ -1,0 +1,28 @@
+.word-helper { position:fixed; z-index:200; top:50%; bottom:auto; width:min(92vw,520px); max-height:90dvh; overflow:auto; padding:24px; box-sizing:border-box; }
+.word-helper.show {transform:translate(-50%,-50%); background:#fffdf7; box-shadow:0 0 0 100vmax #102a4699,0 16px 60px #102a4644;}
+.word-helper-close {top:12px;right:12px;transform:none; min-width:44px;min-height:44px;}
+.word-helper-top {padding-right:44px; margin-bottom:14px;}
+#helperImage {display:block;width:min(256px,100%);height:auto;aspect-ratio:1;margin:0 auto 16px;border-radius:16px;background:#fff4e6;object-fit:contain;}
+#helperImage[hidden] {display:none;}
+.word-helper p {font-size:16px;line-height:1.5;}
+#helperOther {font-size:13px;color:#526779;}
+.helper-controls {display:flex;gap:10px;margin-top:16px;}
+.helper-controls button {min-height:44px;flex:1;border:1px solid #b5c9ce;border-radius:12px;background:#e7f5f1;color:#163951;font:inherit;font-weight:800;cursor:pointer;}
+.word-helper a {font-size:13px;}
+.dictionary-modal,.shop-modal {width:min(94%,900px);max-height:90dvh;overflow:auto;box-sizing:border-box;}
+.word-chips button {min-height:46px;min-width:60px;font-size:18px;padding:10px 15px;border-radius:12px;}
+.dictionary-group {display:block;padding:16px;background:#ffffffad;border-radius:16px;margin-bottom:12px;}
+.dictionary-group h3 {font-size:19px;margin-bottom:12px;}
+.dictionary-phases button,.kind-filter select {min-height:44px;font-size:16px;}
+.kind-filter {display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0;}
+.kind-filter select {padding:8px;border:1px solid #b5c9ce;border-radius:10px;background:white;color:#173555;}
+.book-guidance,.shop-explanation {font-size:15px;line-height:1.5;color:#37586a;margin:16px 0;}
+.shop-item {min-width:0;padding:20px;}
+.shop-item h3 {font-size:20px;}.shop-item p {font-size:15px;line-height:1.5;}
+.shop-item button {min-height:46px;font-size:15px;width:100%;}
+.learn-word span,.clue-stat {display:none;}
+.boss-cleared {pointer-events:none;opacity:1!important;}.boss-cleared .word-plaque::after {content:' ✓';}
+.pip[data-glow="aqua"] .pip-sprite {filter:drop-shadow(0 0 10px #5bffe2);}
+.pip[data-glow="sunset"] .pip-sprite {filter:drop-shadow(0 0 12px #ffc14f);}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible {outline:3px solid #087f8c;outline-offset:3px;}
+@media(max-width:600px) {.shop-grid {grid-template-columns:1fr;}.word-helper {padding:18px;} #helperImage {width:190px;}.word-helper p {font-size:14px;}}
