@@ -6,6 +6,11 @@ Pip uses the teacher voice pitched up with playbackRate 1.4, preservesPitch fals
 this is not a new trained voice. Explicit Next/Skip/mute may interrupt; automatic
 round transitions must wait for narrated completion rather than fixed 2.3s timers.
 
+say() returns a Promise: ended, cancelled, disabled, empty, unavailable or timeout.
+Banner waits for both its minimum display time and this Promise. Explicit stop
+settles cancellation; a bounded watchdog prevents a stalled device blocking play.
+tests/voice-completion.cjs checks lifecycle; reported-bugs.cjs checks the caller.
+
 Speech endpoint: https://prep2-phonics-api.goldenhappyaku.workers.dev/api/speech
 Only text is sent from the browser. The shared Cloudflare worker owns its
 ELEVENLABS_API_KEY secret. Do not read/dump secrets or change the shared phonics
@@ -20,4 +25,3 @@ when hidden. Browser tests/mock voice never spend credits.
 
 WW-009/010 are later: fixed narration asset manifest and first-line autoplay bug.
 Do not claim the silent first-page problem fixed merely because proxy returns200.
-

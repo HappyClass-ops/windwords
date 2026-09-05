@@ -1,4 +1,12 @@
 /* Painted world scenes, with native readable labels and keyboard controls. */
+.world-sign{box-sizing:border-box!important;width:clamp(104px,15vw,158px);min-width:0!important;padding:12px 14px!important;font-family:'Trebuchet MS',system-ui,sans-serif!important;font-size:clamp(12px,1.5vw,17px)!important;font-weight:800!important;letter-spacing:0!important;line-height:1.1!important;white-space:nowrap;text-shadow:none!important;display:grid;place-items:center}
+.map-board .map-fog{background:radial-gradient(ellipse at 45% 48%,#fffef9 12%,#edf6fa 50%,#dbeaf1 75%);backdrop-filter:blur(12px);left:-3%;width:106%;mask-image:radial-gradient(ellipse 29% 49% at 12% 48%,#000 62%,transparent 100%),radial-gradient(ellipse 32% 53% at 45% 51%,#000 60%,transparent 100%),radial-gradient(ellipse 29% 52% at 77% 46%,#000 65%,transparent 100%),radial-gradient(ellipse 25% 43% at 100% 57%,#000 60%,transparent 100%);pointer-events:none}
+.map-board{overflow:hidden!important}
+.shop-stage .shelf-item{top:21%;width:8.5%;min-height:90px}
+.shop-stage .shelf-item img{width:100%;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 4px 2px #27150770)}
+.shop-stage .shelf-item span{position:absolute;top:100%;left:50%;transform:translateX(-50%);min-width:95px;padding:4px 5px;border:0;border-radius:3px;background:#fff0d3;color:#4b301b;font:800 12px 'Trebuchet MS',system-ui,sans-serif;box-shadow:0 2px 3px #25190c65}
+.shop-stage .shelf-item:hover{translate:0 0}.shop-stage .shelf-item:hover img{box-shadow:none;filter:drop-shadow(0 0 7px #ffe49a)}
+@media(max-width:650px){.shop-stage .shelf-item{top:25%;width:10%;min-width:44px;min-height:44px}.shop-stage .shelf-item span{min-width:55px;font-size:10px;white-space:normal}.sound-sign{width:90px!important}}
 .world-scene{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:#102d30;overflow:auto;color:#fff2cb}
 #villageHub.world-scene{padding:0;gap:0;background:#102d30;display:grid}
 .scene-stage{position:relative;width:100vw;max-width:1700px;aspect-ratio:2;overflow:hidden;background-size:100% 100%;background-position:center;border-radius:0;box-shadow:0 0 90px #0008}

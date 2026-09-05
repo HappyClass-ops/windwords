@@ -7,7 +7,7 @@ The user specifically values cheap navigation and safe changes over abstraction.
 | --- | --- | --- |
 | Run supply module | game wallet + hidden shop buttons + world state → guarded run-supplies interface consumed by both | Strong: WW-007; real second caller, isolated transaction tests |
 | Speech completion | fixed banner sleeps + latest-request stop → completion/cancel result awaited at narration callers | Strong: WW-005; removes timing assumptions at the actual seam |
-| Meaning lookup | grammar templates embedded in game → reusable sense-keyed original meaning catalogue | Strong: WW-004; dictionary and gameplay share lookup |
+| Meaning lookup | grammar templates embedded in game → exact-POS provider adapter with picture-specific original overrides | Strong: WW-004; dictionary and gameplay share lookup; offline/missing is explicit |
 | Scene/style cleanup | layered legacy styles + newer overrides → area map and targeted edits first | Worth exploring later; no giant CSS rewrite this release |
 | Universal Pip game engine | one game → speculative package system | Rejected for now: no second real runtime consumer |
 
