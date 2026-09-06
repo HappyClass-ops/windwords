@@ -3,6 +3,10 @@
 Read this file, the assigned GitHub ticket and its linked area guide. Do not load
 chat history, every skill, all assets or the entire repository by default.
 
+- Owner workflow preference (2026-09-06): execute tickets with one agent; do not
+  spawn subagents unless the owner explicitly reverses this preference. Reuse
+  existing work and targeted evidence to limit repeated setup and credit usage.
+
 - Product: Pip’s English, usually teacher-directed classroom play. Learning is the
   default; Classic is optional adventure. Preserve the 496 stable picture IDs and
   bare-word homograph acceptance unless a ticket explicitly changes the contract.
