@@ -32,3 +32,9 @@ Next recommended batch: owner device acceptance of #10/#18/#20/#29/#33 and revie
 of the documented defaults (#11/#15/#23/#30), then approved tiny voice audition #31
 and approved fixed clips #9 only if a separate generation budget is authorized.
 See BATCH-2026-09-06.md and DECISIONS-2026-09-06.md. QA-2026-09-06.md is historical.
+
+Deployment verified 2026-09-06: GitHub Pages reported built for 0d72e9c (runtime
+abb95a7). Live index and camera.js, challenge.js, practice.js, wardrobe.js and
+voice-manifest.js returned HTTP 200. Release URL:
+https://happyclass-ops.github.io/windwords/
+The following documentation-only commit records this observed deployment.
