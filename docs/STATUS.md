@@ -1,22 +1,34 @@
 # Resume here
 
-Date: 2026-09-06. Branch: codex/first-fix-batch. Released baseline remains de7d9c2
-until the next verified deployment. Owner now requests ALL existing tickets,
-executed by this agent alone; no subagents. Push/deployment authorized after checks.
-No paid generation or new credits authorized.
+Date: 2026-09-06. Solo implementation branch: codex/first-fix-batch; publish to main.
+Owner authorized push and GitHub Pages deployment after verification. No subagents,
+paid generation, new credits or resets. Read only the assigned area and live issue.
 
-First batch #13/#10/#18 is implemented and passes all 13 npm test programs.
-#13 acceptance verified; #10 still needs real-iPad listening; #18 still needs true
-200% browser UI zoom. Keep those manual criteria open. Actual Sol/Terra work was
-retained after credit exhaustion; coordinator completed integration.
-See BATCH-2026-09-06.md for provenance, changes, tests and limitations.
+All 25 initially open tickets now have an implementation, isolated prototype, or
+explicit remaining acceptance work. Do not restart backlog planning. Runtime includes
+acceptance/selection fixes, story lifecycle/layout, world paths/shop, persistent
+landing camera/beacons, two type reveals, local practice records/map discoveries,
+wardrobe preview/purchases and a three-stage Classic finale with local music.
+Learning remains gentle; all 496 picture IDs and existing ownership/wallets remain.
 
-Current solo slice: #14 checkpoint correctness, #22 near-repeat history, #19 result
-return label, #21 facing, #32 beacon wording. Claims on GitHub; exact live ticket
-contracts cached only in ignored .git/live-tickets.json. No queue replanning.
-Then #6/#17/#20 world/shop, #26/#27 camera/progression and the design dependencies.
-A single pending owner choice covers help allowance, practice pacing, wardrobe
-prices and Classic progression. Paid audition/assets remain separate blocked work.
+Verification: first 22 programs passed in the final npm test run. The final adventure
+program exposed a stale test selector matching an old landing anchor; scoped it to
+current choices and reran node tests/adventure.cjs successfully. All 23 programs
+therefore passed across the full run and targeted rerun; no runtime change followed.
+Voice tests use fixtures/mocks, not paid speech. Prototype interaction QA also passed.
 
-GitHub remains authoritative. QA-2026-09-06.md is the original triage snapshot.
-Preserve 496 stable picture IDs, existing wallets/ownership and gentle Learning.
+GitHub is authoritative for closure, release commit, and Pages verification.
+Remaining human acceptance: real-iPad first-line listening; true browser 200% zoom;
+physical-tablet comfort; chosen practice/economy/progression defaults; finale sound
+quality. #9 production voice manifest is deliberately empty; #31 delivery plan has
+no paid audition or approved listening result. Do not mark these verified.
+
+Prototype #24 is isolated on codex/map-discovery-prototype at 1036c64, in the sibling
+windwords-map-prototype worktree. Push that branch; never merge/deploy the prototype.
+The two original worker worktrees contain preserved unfinished edits; do not delete
+or re-integrate them. Their useful changes are already integrated.
+
+Next recommended batch: owner device acceptance of #10/#18/#20/#29/#33 and review
+of the documented defaults (#11/#15/#23/#30), then approved tiny voice audition #31
+and approved fixed clips #9 only if a separate generation budget is authorized.
+See BATCH-2026-09-06.md and DECISIONS-2026-09-06.md. QA-2026-09-06.md is historical.

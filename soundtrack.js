@@ -9,6 +9,7 @@ window.PipSoundtrack = (() => {
     sky:{bpm:104,root:62,scale:[0,2,4,7,9],chords:[0,4,3,0],melody:[0,1,2,-1,3,2,4,3,2,-1,1,2,3,1,0,-1],tone:'triangle',ambience:'village'},
     forest:{bpm:86,root:57,scale:[0,2,3,7,9],chords:[0,3,1,4],melody:[0,2,-1,3,1,-1,2,4,3,-1,2,1,0,-1,1,-1],tone:'triangle',ambience:'forest'},
     crystal:{bpm:78,root:64,scale:[0,2,4,6,9],chords:[0,3,2,4],melody:[4,-1,2,-1,3,1,-1,2,0,-1,4,3,-1,2,1,-1],tone:'sine',ambience:'crystal'},
+    finale:{bpm:124,root:45,scale:[0,2,3,7,10],chords:[0,3,1,4],melody:[0,2,3,4,3,2,1,0,4,3,2,4,3,1,2,0],tone:'triangle',ambience:'volcano'},
     volcano:{bpm:112,root:45,scale:[0,2,3,7,10],chords:[0,1,3,0],melody:[0,-1,0,2,3,-1,2,1,0,2,3,-1,4,3,2,-1],tone:'triangle',ambience:'volcano'}
   };
   let context,active,timer,current='village',enabled=()=>true,ducked=false,unlocked=false;

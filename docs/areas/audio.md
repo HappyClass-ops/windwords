@@ -23,5 +23,5 @@ loops in assets/audio/zones; not Music API tracks. Music API was paid-plan block
 Old flight/shop audio preserved but not loaded. Scene bus fades/ducks and pauses
 when hidden. Browser tests/mock voice never spend credits.
 
-WW-009/010 are later: fixed narration asset manifest and first-line autoplay bug.
+WW-009 has versioned lazy bundled playback with fixture coverage; the production manifest is empty pending approved clips. WW-010 initializes the overlay before narration and offers replay on playback failure. Real-iPad listening is still unverified.
 Do not claim the silent first-page problem fixed merely because proxy returns200.

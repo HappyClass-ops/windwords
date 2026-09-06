@@ -7,8 +7,8 @@ Keep purchase validation independent of whether a button happens to be disabled.
 Classic non-final beacons offer Visit supply stop / Continue, then route choice.
 No mid-run/village run-aid purchases. Village shop sells saved-star cosmetics.
 Run aids: one automatic rescue (4), refill one heart (3), add one reveal (2).
-Each type once per stop, shield capacity one, hearts/reveals capacity three.
-Start always resets the run wallet/aids and begins at three hearts and reveals.
+Each type once per stop, shield capacity one, hearts capacity three, type reveals capacity two.
+Start always resets the run wallet/aids and begins at three hearts and two type reveals.
 world.checkpointStop() resolves once when skipping/exiting; cancellation exits
 without continuing an ended run. HUD shows run stars in Classic.
 

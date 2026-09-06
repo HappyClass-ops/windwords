@@ -3,14 +3,14 @@ window.PipSupplies=(()=>{
   const items=[
     {id:'shield',art:'shield',name:'Cloud rescue',cost:4,detail:'One wrong landing costs no heart. Used automatically, then gone.'},
     {id:'heart',art:'heart',name:'Mend a heart',cost:3,detail:'Refill one missing heart now. You can carry three hearts.'},
-    {id:'reveal',art:'chime',name:'Picture hint',cost:2,detail:'Add one word-type reveal. Use it inside a picture clue. Carry up to three.'}
+    {id:'reveal',art:'chime',name:'Word type reveal',cost:2,detail:'Add one word-type reveal. Use it inside a picture clue. Carry up to two.'}
   ];
   let classic=false,stars=0,shield=false,atStop=false,bought=new Set();
   function reset(mode){classic=mode==='classic';stars=0;shield=false;atStop=false;bought.clear();}
   function enter(){atStop=classic;bought.clear();}
   function leave(){atStop=false;}
   function stock(state){return items.map(item=>{
-    const full=item.id==='shield'?shield:item.id==='heart'?state.hearts>=3:state.clues>=3;
+    const full=item.id==='shield'?shield:item.id==='heart'?state.hearts>=3:state.clues>=2;
     const reason=!classic||!atStop?'At Classic checkpoint stops':bought.has(item.id)?'Bought at this stop':full?'Already full':stars<item.cost?'Need '+(item.cost-stars)+' more run stars':'';
     return {...item,disabled:!!reason,label:reason||'Get · '+item.cost+' run stars'};
   });}

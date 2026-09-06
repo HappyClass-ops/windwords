@@ -16,13 +16,20 @@ window.PipVoice = (() => {
     })();pending.set(text,request);try{const url=await request;memory.set(text,url);if(memory.size>100){const first=memory.keys().next().value;URL.revokeObjectURL(memory.get(first));memory.delete(first);}return url;}finally{pending.delete(text);}
   }
   function browser(text,role,id){if(!window.speechSynthesis){finish('unavailable');return;}try{const voice=new SpeechSynthesisUtterance(text);voice.lang='en-GB';voice.rate=role==='pip'?1:.82;voice.pitch=role==='pip'?1.8:1;voice.volume=.42;const british=speechSynthesis.getVoices().find(v=>/^en-GB/i.test(v.lang));if(british)voice.voice=british;voice.onend=()=>{if(id===token)finish('ended');};voice.onerror=()=>{if(id===token)finish('unavailable');};speechSynthesis.speak(voice);}catch{if(id===token)finish('unavailable');}}
+  async function playback(clean,role,id,allowBundle=true){
+    const manifest=window.PipVoiceManifest;
+    const bundle=allowBundle&&manifest?.clips?.find(c=>c.text===clean&&c.role===role&&c.scriptVersion===manifest.scriptVersion&&c.styleVersion===manifest.styleVersion);
+    let failed=false,audio;
+    const fallback=()=>{if(failed||id!==token)return;failed=true;if(audio){audio.pause();if(active===audio)active=null;}if(!enabled()){finish('disabled');return;}if(bundle)playback(clean,role,id,false);else browser(clean,role,id);};
+    try{const url=bundle?bundle.src:await clip(/[.!?]$/.test(clean)?clean:clean+'.');if(id!==token)return;if(!enabled()){finish('disabled');return;}audio=new Audio(url);audio.volume=role==='pip'?.38:.44;if(role==='pip'&&!bundle?.nativeDelivery){audio.preservesPitch=false;audio.webkitPreservesPitch=false;audio.playbackRate=1.4;}active=audio;audio.onended=()=>{if(id===token&&!failed){active=null;finish('ended');}};audio.onerror=fallback;await audio.play();}catch{fallback();}
+  }
   function say(text,role='teacher'){
     stop();if(!enabled())return Promise.resolve('disabled');
     const clean=String(text||'').trim();if(!clean)return Promise.resolve('empty');
     const id=token,completion=new Promise(resolve=>settle=resolve);
     // A stalled browser/audio device must never strand a checkpoint.
     watchdog=setTimeout(()=>{if(id!==token)return;if(active){active.pause();active=null;}window.speechSynthesis?.cancel();token++;finish('timeout');},Math.min(120000,20000+clean.length*120));
-    timer=setTimeout(async()=>{duck(true);try{const url=await clip(/[.!?]$/.test(clean)?clean:clean+'.');if(id!==token)return;if(!enabled()){finish('disabled');return;}const audio=new Audio(url);audio.volume=role==='pip'?.38:.44;if(role==='pip'){audio.preservesPitch=false;audio.webkitPreservesPitch=false;audio.playbackRate=1.4;}active=audio;audio.onended=()=>{if(id===token){active=null;finish('ended');}};audio.onerror=()=>{if(id===token){active=null;finish('unavailable');}};await audio.play();}catch{if(id===token){if(active){active.pause();active=null;}if(enabled())browser(clean,role,id);else finish('disabled');}}},180);
+    timer=setTimeout(()=>{duck(true);playback(clean,role,id);},180);
     return completion;
   }
   return{configure(options){duck=options.duck;enabled=options.enabled;},say,stop};
