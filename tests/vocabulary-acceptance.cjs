@@ -24,6 +24,8 @@ assert(vocabulary.accepts('sink','noun'));
 assert.equal(vocabulary.accepts('trim','adverb'),false);
 assert.equal(vocabulary.accepts('nest','adjective'),false);
 assert.equal(vocabulary.accepts('cat','verb'),false);
+assert.equal(vocabulary.accepts('cap','verb'),false);
+for(const word of ['pan','cap','cat','hat','pot'])assert.deepEqual(Array.from(vocabulary.kindsFor(word)),['noun'],word+' stays an early-years noun');
 assert.equal(vocabulary.accepts('unknown','noun'),false);
 
 assert(vocabulary.accepts('trim','adjective',{kind:'adjective'}));

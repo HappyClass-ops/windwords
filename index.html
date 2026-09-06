@@ -48,7 +48,7 @@
       <div class="pip" id="pip" aria-hidden="true"><div class="pip-sprite"></div></div>
     </section>
 
-    <div id="beaconStation" class="beacon-station" role="img" aria-label="Beacon ahead"><i></i><span>◆</span></div>
+    <div id="beaconStation" class="beacon-station" role="img" aria-label="Beacon ahead"><img src="assets/journey/beacon-tower.webp" alt=""><i class="beacon-flare" aria-hidden="true"></i></div>
     <div class="trail" id="trail" aria-label="Six-step trail progress"></div>
     <div class="toast" id="toast" role="status" aria-live="assertive"></div>
     <div class="particles" id="particles" aria-hidden="true"></div>
@@ -129,7 +129,7 @@
         <button class="close-button" id="closeDictionaryButton" type="button" aria-label="Close word book">×</button>
         <div class="eyebrow">Pip’s word book</div><h2 id="dictionaryTitle">Word dictionary</h2>
         <div class="dictionary-tools"><div class="dictionary-phases" id="dictionaryPhases" role="group" aria-label="Dictionary phase"></div><label class="word-search"><span class="screen-reader-only">Search words</span><input id="dictionarySearch" type="search" placeholder="Find a word…" autocomplete="off"></label></div>
-        <label class="kind-filter">Word type <select id="dictionaryKind"><option value="">All word types</option><option value="noun">Nouns — what is it?</option><option value="verb">Verbs — what happens?</option><option value="adjective">Adjectives — what is it like?</option><option value="adverb">Adverbs — how, when, where?</option></select></label><p class="book-guidance">Tap a word to see its picture and hear its job. Use the arrows to explore.</p>
+        <input id="dictionaryKind" type="hidden" value=""><div class="kind-tabs" id="dictionaryKinds" role="tablist" aria-label="Word type"><button type="button" role="tab" data-kind="" aria-selected="true">All</button><button type="button" role="tab" data-kind="noun" aria-selected="false">Nouns</button><button type="button" role="tab" data-kind="verb" aria-selected="false">Verbs</button><button type="button" role="tab" data-kind="adjective" aria-selected="false">Adjectives</button><button type="button" role="tab" data-kind="adverb" aria-selected="false">Adverbs</button></div><p class="book-guidance">Tap a word to see its picture and hear its job. Use the arrows to explore.</p>
         <div class="dictionary-list" id="dictionaryList"></div>
       </div>
     </section>
