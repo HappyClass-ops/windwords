@@ -33,3 +33,4 @@
 @media(max-width:650px){.story-modal{grid-template-columns:44px minmax(0,1fr)!important;gap:10px!important;padding:12px!important;border-width:4px!important}.story-modal .button-row{gap:6px;margin-top:10px}.story-modal .button-row button{padding:8px 10px;font-size:16px;min-height:44px}.story-copy>p{margin:10px 0}.story-modal .eyebrow{font-size:12px}}
 .story-modal{grid-template-rows:minmax(0,1fr);overflow:hidden}.story-modal .story-copy{display:flex;flex-direction:column;min-height:0;overflow:hidden}.story-copy>p{overflow:auto;min-height:0;flex:0 1 auto}.story-copy>.eyebrow,.story-copy>.button-row{flex-shrink:0}.story-modal .story-mascot{scale:1}
 .story-modal .story-copy{max-height:100%;align-self:stretch}
+.pip.face-left .pip-sprite{scale:-1 1}

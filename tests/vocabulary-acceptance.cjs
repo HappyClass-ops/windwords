@@ -32,7 +32,7 @@ assert(vocabulary.accepts('nest','noun',{kind:'noun'}));
 assert.equal(vocabulary.accepts('nest','verb',{kind:'noun'}),false);
 
 const game=fs.readFileSync(__dirname+'/../game.js','utf8');
-assert.match(game,/options\.forEach\(o => \{ o\.bossCorrect = PipVocabulary\.accepts\(o\.word,state\.targetKind\); \}\)/,'checkpoint scoring must use shared acceptance');
+assert.match(game,/PipSelection.create\(PipVocabulary.accepts\)/,'selection must use shared acceptance');
 assert.match(game,/else if \(PipVocabulary\.accepts\(island\.dataset\.word, state\.targetKind\)\)/,'normal scoring must use shared acceptance');
 assert.match(game,/const acceptedKinds = PipVocabulary\.kindsFor\(island\.dataset\.word\)/,'feedback must use shared accepted kinds');
 
