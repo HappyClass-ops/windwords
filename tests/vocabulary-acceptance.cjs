@@ -13,6 +13,7 @@ for(const word of Object.keys(vocabulary.acceptedUseMetadata)){
 
 assert(vocabulary.accepts('trim','verb'));
 assert(vocabulary.accepts('trim','adjective'));
+assert(vocabulary.accepts('trim','noun'));
 assert(vocabulary.accepts('nest','verb'));
 assert(vocabulary.accepts('nest','noun'));
 assert(vocabulary.accepts('sail','verb'));
@@ -20,7 +21,7 @@ assert(vocabulary.accepts('sail','noun'));
 assert(vocabulary.accepts('sink','verb'));
 assert(vocabulary.accepts('sink','noun'));
 
-assert.equal(vocabulary.accepts('trim','noun'),false);
+assert.equal(vocabulary.accepts('trim','adverb'),false);
 assert.equal(vocabulary.accepts('nest','adjective'),false);
 assert.equal(vocabulary.accepts('cat','verb'),false);
 assert.equal(vocabulary.accepts('unknown','noun'),false);
