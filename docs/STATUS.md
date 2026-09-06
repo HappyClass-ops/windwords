@@ -1,6 +1,6 @@
 # Resume here
 
-Date: 2026-09-06. Solo implementation branch: codex/first-fix-batch; publish to main.
+Date: 2026-09-06. Runtime abb95a7 is committed and pushed to main; Pages builds automatically.
 Owner authorized push and GitHub Pages deployment after verification. No subagents,
 paid generation, new credits or resets. Read only the assigned area and live issue.
 
@@ -24,7 +24,7 @@ quality. #9 production voice manifest is deliberately empty; #31 delivery plan h
 no paid audition or approved listening result. Do not mark these verified.
 
 Prototype #24 is isolated on codex/map-discovery-prototype at 1036c64, in the sibling
-windwords-map-prototype worktree. Push that branch; never merge/deploy the prototype.
+windwords-map-prototype worktree. That branch is pushed; never merge/deploy the prototype.
 The two original worker worktrees contain preserved unfinished edits; do not delete
 or re-integrate them. Their useful changes are already integrated.
 

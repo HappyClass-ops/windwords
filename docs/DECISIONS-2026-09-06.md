@@ -65,7 +65,7 @@ eligible (0 is insufficient). Existing 3 cosmetics cost 70 total; proposed three
 outfits cost 30. All-owned has no mandatory sink: keep savings, freely change
 appearance, and optionally replay/review for practice. Village decorations are
 future candidates, not an invented tax or endlessly escalating grind.
-Status: price/loop approval is required before purchase implementation.
+Status: implemented as reversible coordinator defaults; explicit price/loop approval remains unverified.
 
 ## #31 / #9: audio direction and clips
 
@@ -85,5 +85,4 @@ exit cancels all continuations. Reward each right answer once and final completi
 bonus once; intermediate stages award no duplicate beacon bonus. Learning keeps
 one gentle final beacon. Reuse local music composition with a distinct finale
 state that exits on result/village, respects mute/background and reduced motion.
-Status: encounter/progression approval required before implementation.
-
+Status: implemented as a bounded coordinator default; explicit progression approval and device comfort remain unverified.
