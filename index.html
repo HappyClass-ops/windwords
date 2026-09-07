@@ -145,12 +145,12 @@
 
     <section class="overlay" id="checkpointReview" aria-labelledby="reviewTitle">
       <div class="modal review-modal">
-        <div class="eyebrow">Beacon restored!</div>
+        <div class="eyebrow" id="reviewEyebrow">Beacon restored!</div>
         <h2 id="reviewTitle">Well done, word explorer!</h2>
         <p id="reviewProgress" class="review-progress"></p>
         <article id="reviewCard" class="review-card">
           <img id="reviewImage" width="256" height="256" alt="">
-          <div><strong id="reviewWord"></strong><span id="reviewKind"></span></div>
+          <div><strong id="reviewWord"></strong><span id="reviewKind"></span><p id="reviewDefinition" class="review-definition"></p></div>
         </article>
         <p class="review-nudge">Look, say the word, then tap next.</p>
         <button class="primary-button" id="reviewNext" type="button">Next word</button>

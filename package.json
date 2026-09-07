@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.cjs",
-    "test": "node tests/practice.cjs && node tests/wardrobe.cjs && node tests/voice-manifest.cjs && node tests/help-policy.cjs && node tests/camera.cjs && node tests/progression.cjs && node tests/navigation.cjs && node tests/world-navigation.cjs && node tests/selection.cjs && node tests/solo-fixes.cjs && node tests/vocabulary-acceptance.cjs && node tests/story-audio.cjs && node tests/story-viewport.cjs && node tests/voice-autoplay.cjs && node tests/voice.cjs && node tests/voice-completion.cjs && node tests/meanings.cjs && node tests/run-supplies.cjs && node tests/reported-bugs.cjs && node tests/soundtrack.cjs && node tests/pip-position.cjs && node tests/world.cjs && node tests/adventure.cjs"
+    "test": "node tests/practice.cjs && node tests/wardrobe.cjs && node tests/voice-manifest.cjs && node tests/help-policy.cjs && node tests/camera.cjs && node tests/jump-transition.cjs && node tests/progression.cjs && node tests/navigation.cjs && node tests/world-navigation.cjs && node tests/selection.cjs && node tests/solo-fixes.cjs && node tests/vocabulary-acceptance.cjs && node tests/story-audio.cjs && node tests/story-viewport.cjs && node tests/voice-autoplay.cjs && node tests/voice.cjs && node tests/voice-completion.cjs && node tests/meanings.cjs && node tests/run-supplies.cjs && node tests/reported-bugs.cjs && node tests/soundtrack.cjs && node tests/pip-position.cjs && node tests/world.cjs && node tests/adventure.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

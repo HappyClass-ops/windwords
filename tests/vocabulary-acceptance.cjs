@@ -20,6 +20,9 @@ assert(vocabulary.accepts('sail','verb'));
 assert(vocabulary.accepts('sail','noun'));
 assert(vocabulary.accepts('sink','verb'));
 assert(vocabulary.accepts('sink','noun'));
+assert(vocabulary.accepts('bag','noun'));
+assert(vocabulary.accepts('bag','verb'));
+assert.equal(vocabulary.get(2,'verb','bag'),undefined,'bag remains accepted as a verb safety net without becoming a verb teaching picture');
 
 assert.equal(vocabulary.accepts('trim','adverb'),false);
 assert.equal(vocabulary.accepts('nest','adjective'),false);
@@ -35,7 +38,8 @@ assert.equal(vocabulary.accepts('nest','verb',{kind:'noun'}),false);
 
 const game=fs.readFileSync(__dirname+'/../game.js','utf8');
 assert.match(game,/PipSelection.create\(PipVocabulary.accepts\)/,'selection must use shared acceptance');
-assert.match(game,/else if \(PipVocabulary\.accepts\(island\.dataset\.word, state\.targetKind\)\)/,'normal scoring must use shared acceptance');
+assert.match(game,/accepted=PipVocabulary\.accepts\(island\.dataset\.word,state\.targetKind\)/,'normal scoring must use shared acceptance');
+assert.match(game,/else if \(accepted\) await correctChoice/,'normal scoring must honour the shared acceptance result');
 assert.match(game,/const acceptedKinds = PipVocabulary\.kindsFor\(island\.dataset\.word\)/,'feedback must use shared accepted kinds');
 
 console.log('PASS: 496 stable IDs; bounded playable metadata; trim/nest/sail/sink bare uses; invalid and context-disambiguated uses; shared normal/checkpoint/feedback rule.');

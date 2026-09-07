@@ -336,7 +336,6 @@
   transition: filter 1.15s ease, background-position 1.15s cubic-bezier(.16,.8,.28,1);
 }
 .game-shell.climbing .sky-scene { animation: camera-climb 1s cubic-bezier(.16,.8,.28,1); }
-.game-shell.climbing .world { animation: world-drop .95s cubic-bezier(.16,.8,.28,1); }
 .game-shell.climbing .parallax-cloud { animation-duration: .78s; opacity: .34; }
 
 .pip-sprite,
@@ -488,12 +487,6 @@
   45% { transform: scale(1.13) translateY(5%); filter: brightness(1.14) saturate(1.16); }
   100% { transform: scale(1.04) translateY(0); }
 }
-@keyframes world-drop {
-  0% { transform: translateY(0); }
-  45% { transform: translateY(2.4%); }
-  100% { transform: translateY(0); }
-}
-
 @media (max-width: 700px) {
   .phase-panel { padding: 2.5%; }
   .phase-choice b { display: none; }
