@@ -1,7 +1,18 @@
 const vm=require('vm'),fs=require('fs'),assert=require('assert/strict');
-let calls=0,spoken=[],plays=[],stored=new Map(),status=200;
+let networkCalls=0,plays=[];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 class Audio{constructor(url){this.url=url;}play(){plays.push(this);return Promise.resolve();}pause(){}}
-const cache={match:async r=>stored.get(r.url)?.clone(),put:async(r,v)=>stored.set(r.url,v),keys:async()=>[...stored.keys()].map(k=>new Request(k)),delete:async r=>stored.delete(r.url)};
-const context={console,setTimeout,clearTimeout,Map,Date,Error,String,URL,Request,Response,AbortController,Audio,caches:{open:async()=>cache},location:{href:'http://localhost/'}};context.window=context;context.speechSynthesis={cancel(){}};context.fetch=async()=>{calls++;await sleep(100);return new Response(status===200?new Uint8Array([1,2,3]):'error',{status,headers:{'Content-Type':status===200?'audio/mpeg':'application/json'}});};vm.createContext(context);const code=fs.readFileSync(__dirname+'/../voice.js','utf8');vm.runInContext(code,context);
-(async()=>{let unavailable=0;const voice=context.PipVoice;voice.configure({enabled:()=>true,duck:()=>{},unavailable:()=>unavailable++});voice.say('A');voice.say('B');await sleep(350);assert.equal(calls,1);assert.equal(plays.length,1);voice.say('B');await sleep(250);assert.equal(calls,1,'cached repeats');voice.say('C');await sleep(210);voice.say('C');await sleep(400);assert.equal(calls,2,'in-flight dedup');assert.equal(plays.length,3,'obsolete caller does not play');voice.say('D');await sleep(210);voice.stop();await sleep(180);assert.equal(plays.length,3,'stale speech stays stopped');status=502;assert.equal(await voice.say('E'),'unavailable');assert.equal(unavailable,1);const count=calls;assert.equal(await voice.say('F'),'unavailable');assert.equal(calls,count,'cooldown prevents hammering');assert.equal(unavailable,2);voice.say('B','pip');await sleep(250);assert.equal(plays.at(-1).playbackRate,1.45);assert.equal(plays.at(-1).preservesPitch,false);voice.stop();console.log('PASS: speech debounce, cache, in-flight deduplication, stale cancellation, visible 502 failure, no browser-voice substitution, Pip pitch treatment; zero paid calls.');})().catch(e=>{console.error(e);process.exitCode=1;});
+const context={console,setTimeout,clearTimeout,Date,Error,String,Audio,fetch:async()=>{networkCalls++;throw Error('network must not be used');}};
+context.window=context;context.speechSynthesis={cancel(){}};
+context.PipVoiceManifest={scriptVersion:'v1',styleVersion:'s1',clips:[
+  ...['A','B','C','D'].map(text=>({text,role:'teacher',scriptVersion:'v1',styleVersion:'s1',src:'/local/'+text+'.mp3'})),
+  {text:'B',role:'pip',scriptVersion:'v1',styleVersion:'s1',src:'/local/pip-B.mp3'}
+]};
+vm.createContext(context);vm.runInContext(fs.readFileSync(__dirname+'/../voice.js','utf8'),context);
+(async()=>{let unavailable=0;const voice=context.PipVoice;voice.configure({enabled:()=>true,duck:()=>{},unavailable:()=>unavailable++});
+  const old=voice.say('A');voice.say('B');assert.equal(await old,'cancelled');await sleep(250);assert.equal(plays.length,1);assert.equal(plays[0].url,'/local/B.mp3');
+  voice.say('C');await sleep(210);voice.say('D');await sleep(250);assert.equal(plays.at(-1).url,'/local/D.mp3','latest local request wins');
+  assert.equal(await voice.say('Missing'),'unavailable');assert.equal(unavailable,1,'missing local clip reports internally once');assert.equal(networkCalls,0,'missing clips never call a speech API');
+  voice.say('B','pip');await sleep(250);assert.equal(plays.at(-1).playbackRate,1.45);assert.equal(plays.at(-1).preservesPitch,false);voice.stop();
+  console.log('PASS: local-manifest playback, latest-intent cancellation, silent missing clips, no remote calls, and Pip pitch treatment.');
+})().catch(e=>{context.PipVoice.stop();console.error(e);process.exitCode=1;});

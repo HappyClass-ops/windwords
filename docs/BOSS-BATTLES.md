@@ -4,12 +4,14 @@ Every phase checkpoint is now a readable boss encounter. The urgency bar creates
 
 | Phase | Boss | Literacy decision | Pressure | Recovery |
 | --- | --- | --- | --- | --- |
-| 2 | The Spore Bramble | Short-vowel verbs | Brambles bind a wrong island | Doing-word hint; 18s Learning / 12s Classic |
-| 3 | The Cloud Kraken | Long-vowel nouns | Squall sinks a wrong island | Naming-word hint; 17s / 11s |
-| 4 | The Gale Golem | Blend-rich adjectives | Wind mist shrouds a wrong island | Describing-word hint; 16s / 10s |
-| 5 | The Magma Wyrm | Nouns, then verbs, then adverbs | Lava melts a wrong island | Stage-specific hint; 17s / 9s |
+| 2 | The Spore Bramble | Short-vowel verbs | Brambles bind an island | Doing-word hint; 15s per landing |
+| 3 | The Cloud Kraken | Long-vowel nouns | Squall sinks an island | Naming-word hint; 15s per landing |
+| 4 | The Gale Golem | Blend-rich adjectives | Wind mist shrouds an island | Describing-word hint; 10s per landing |
+| 5 | The Magma Wyrm | Nouns, then verbs, then adverbs | Lava melts an island | Stage-specific hint; 8s per landing |
 
-The Classic summit has three deterministic stages: break the shield with nouns, dodge fountains with verbs, then light the beacon with adverbs. Each right landing removes one health rune. Boss state owns its timer, pauses while the tab is hidden, respects reduced motion, and is stopped before review/results so music and intervals cannot leak into another scene.
+The Classic summit has three deterministic stages: break the shield with nouns, dodge fountains with verbs, then light the beacon with adverbs. Each right landing removes one health rune. Boss state owns its timer, pauses while the tab is hidden or while a promised correct island is arriving, respects reduced motion, and is stopped before review/results so music and intervals cannot leak into another scene.
+
+Each encounter waits for the boss introduction playback result (including muted, unavailable, failed or cancelled results), shows a short Ready / Go cue, and only then enables choices, island scheduling and the countdown. The island scheduler owns fixed slots through active, destruction, empty, spawning and active states. It keeps four replacements planned, serialises every operation per slot and commits a selectable correct answer within a configurable two-second maximum gap.
 
 ## Audio
 
