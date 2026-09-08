@@ -41,7 +41,8 @@ window.PipBossBattle = (() => {
         </svg>
         <span class="timer-seconds">--</span>
       `;
-      root.appendChild(circleWrap);
+      const targetWrap = root.querySelector('.boss-meter-wrap') || root.querySelector('.boss-top-hud') || root;
+      targetWrap.appendChild(circleWrap);
     }
     timerCircle = root.querySelector('.boss-timer-circle');
     secondsNode = root.querySelector('.timer-seconds');
@@ -152,7 +153,7 @@ window.PipBossBattle = (() => {
     encounterTotal = total;
     const healthFill = root.querySelector('.boss-health-fill');
     if (healthFill) {
-      const ratio = Math.max(0, remaining / Math.max(1, total));
+      const ratio = Math.max(0, Math.min(1, remaining / Math.max(1, total)));
       healthFill.style.transform = `scaleX(${ratio})`;
     }
   }

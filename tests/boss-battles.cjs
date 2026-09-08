@@ -44,7 +44,7 @@ const server=http.createServer((req,res)=>{
       return {phase,id:p.id,hazard:p.hazard,music:p.music,kind:p.kind,count:p.count,targetHits:p.targetHits,stages:p.stages,timer:p.timerMs};
     }));
     assert.deepEqual(contracts.map(p=>p.id),['spore-bramble','cloud-kraken','gale-golem','magma-wyrm']);
-    assert.deepEqual(contracts.map(p=>p.targetHits),[5,5,5,7]);
+    assert.deepEqual(contracts.map(p=>p.targetHits),[3,5,7,10]);
 
     await page.click('#hubPlay');
     await page.click('[data-play-mode="classic"]');
@@ -61,6 +61,13 @@ const server=http.createServer((req,res)=>{
 
     assert(await page.locator('#bossContainer.active').isVisible());
     assert(await page.locator('.boss-timer-circle').isVisible());
+    assert(await page.locator('.boss-top-hud').isVisible(), 'Boss top HUD must be visible');
+    assert(await page.locator('.boss-sprite').isVisible(), 'Boss sprite must be visible in arena');
+    const initialHealthScale = await page.evaluate(() => {
+      const fill = document.querySelector('.boss-health-fill');
+      return fill ? fill.style.transform : '';
+    });
+    assert(initialHealthScale.includes('scaleX(1)'), 'Health bar must start 100% full');
     assert.equal(await page.evaluate(()=>PipSoundtrack.battle),'boss-moss');
 
     // Timer attacks reduce hearts
@@ -69,7 +76,7 @@ const server=http.createServer((req,res)=>{
 
     // Test landing damages boss and decrements bossRemaining
     const initialHits = await page.evaluate(()=>testGame.state.bossRemaining);
-    assert.equal(initialHits, 2);
+    assert.equal(initialHits, 3, 'Boss 1 must require 3 hits');
 
     // Click a correct island
     const landed = await page.evaluate(async()=>{
@@ -82,7 +89,7 @@ const server=http.createServer((req,res)=>{
     });
     assert(landed, 'Must find and land on a correct island');
     const remainingAfterLanding = await page.evaluate(()=>testGame.state.bossRemaining);
-    assert.equal(remainingAfterLanding, 1, 'Landing must decrement bossRemaining immediately');
+    assert.equal(remainingAfterLanding, 2, 'Landing must decrement bossRemaining immediately (3 -> 2)');
 
     // Verify there is always at least one correct island selectable
     const hasCorrectChoice = await page.evaluate(()=>{

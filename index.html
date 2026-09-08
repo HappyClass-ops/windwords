@@ -44,10 +44,21 @@
     </header>
 
     <section class="boss-container" id="bossContainer" aria-live="polite" hidden>
-      <div class="boss-heading"><span class="boss-stage">Checkpoint battle</span><strong class="boss-name">Checkpoint guardian</strong></div>
-      <div class="boss-sprite" role="img" aria-label="Checkpoint guardian"><i class="boss-crown"></i><i class="boss-face"></i><i class="boss-core"></i><i class="boss-arm left"></i><i class="boss-arm right"></i></div>
-      <div class="boss-health-bar" aria-label="Boss calm meter"><i class="boss-health-fill"></i></div>
-      <div class="urgency-meter" aria-label="Time until the next boss move"><i class="urgency-fill"></i></div>
+      <div class="boss-top-hud">
+        <div class="boss-heading"><span class="boss-stage">Checkpoint battle</span><strong class="boss-name">Checkpoint guardian</strong></div>
+        <div class="boss-meter-wrap">
+          <div class="boss-health-bar" aria-label="Boss calm meter"><i class="boss-health-fill"></i></div>
+          <div class="boss-timer-circle" role="timer" aria-label="Boss attack timer">
+            <svg viewBox="0 0 60 60" class="timer-svg" aria-hidden="true">
+              <circle class="timer-bg" cx="30" cy="30" r="25"></circle>
+              <circle class="timer-ring" cx="30" cy="30" r="25"></circle>
+            </svg>
+            <span class="timer-seconds">--</span>
+          </div>
+        </div>
+        <div class="urgency-meter" aria-label="Time until the next boss move" hidden><i class="urgency-fill"></i></div>
+      </div>
+      <div class="boss-sprite" role="img" aria-label="Checkpoint guardian"><img class="boss-img" alt=""><i class="boss-crown"></i><i class="boss-face"></i><i class="boss-core"></i><i class="boss-arm left"></i><i class="boss-arm right"></i></div>
       <span class="boss-live screen-reader-only"></span>
     </section>
 
