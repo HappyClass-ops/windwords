@@ -207,85 +207,59 @@
 /* Timer sprite running around the ring perimeter */
 .timer-sprite-runner {
   position: absolute;
-  top: -10px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  filter: drop-shadow(0 0 6px rgba(46, 213, 115, 0.9));
+  filter: drop-shadow(0 0 6px rgba(46, 213, 115, 0.9)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   animation: timer-sprite-bob 1.4s ease-in-out infinite alternate;
+  z-index: 15;
 }
 
-.timer-sprite-svg {
+.timer-sprite-img {
   width: 100%;
   height: 100%;
-  overflow: visible;
-  animation: timer-sprite-twinkle 2.4s linear infinite;
-}
-
-.timer-sprite-glow {
-  fill: #2ed573;
-  opacity: 0.45;
-  filter: blur(2px);
-}
-
-.timer-sprite-spark {
-  fill: #7bed9f;
-  filter: drop-shadow(0 0 3px #2ed573);
-}
-
-.timer-sprite-core {
-  fill: #ffffff;
+  object-fit: contain;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+  transform-origin: center center;
+  animation: timer-sprite-flutter 1.8s ease-in-out infinite alternate;
 }
 
 /* Boss specific sprite themes */
-.boss-container[data-boss="moss"] .timer-sprite-glow { fill: #2ed573; }
-.boss-container[data-boss="moss"] .timer-sprite-spark { fill: #7bed9f; }
-
-.boss-container[data-boss="kraken"] .timer-sprite-glow { fill: #1e90ff; }
-.boss-container[data-boss="kraken"] .timer-sprite-spark { fill: #70a1ff; }
-.boss-container[data-boss="kraken"] .timer-sprite-runner { filter: drop-shadow(0 0 6px rgba(30, 144, 255, 0.95)); }
-
-.boss-container[data-boss="gale"] .timer-sprite-glow { fill: #00d2d3; }
-.boss-container[data-boss="gale"] .timer-sprite-spark { fill: #c8d6e5; }
-.boss-container[data-boss="gale"] .timer-sprite-runner { filter: drop-shadow(0 0 6px rgba(0, 210, 211, 0.95)); }
-
-.boss-container[data-boss="volcano"] .timer-sprite-glow { fill: #ff4757; }
-.boss-container[data-boss="volcano"] .timer-sprite-spark { fill: #ffa502; }
-.boss-container[data-boss="volcano"] .timer-sprite-runner { filter: drop-shadow(0 0 8px rgba(255, 71, 87, 0.98)); }
+.boss-container[data-boss="moss"] .timer-sprite-runner { filter: drop-shadow(0 0 8px rgba(46, 213, 115, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+.boss-container[data-boss="kraken"] .timer-sprite-runner { filter: drop-shadow(0 0 8px rgba(30, 144, 255, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+.boss-container[data-boss="gale"] .timer-sprite-runner { filter: drop-shadow(0 0 8px rgba(0, 210, 211, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+.boss-container[data-boss="volcano"] .timer-sprite-runner { filter: drop-shadow(0 0 10px rgba(255, 71, 87, 0.98)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
 
 /* Urgency warning states */
 .boss-timer-circle.warning .timer-sprite-runner {
-  filter: drop-shadow(0 0 8px #ffa502);
+  filter: drop-shadow(0 0 10px #ffa502) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
-.boss-timer-circle.warning .timer-sprite-glow { fill: #ffa502; }
-.boss-timer-circle.warning .timer-sprite-spark { fill: #ffbe76; }
 
 .boss-timer-circle.critical .timer-sprite-runner {
-  filter: drop-shadow(0 0 10px #ff4757);
+  filter: drop-shadow(0 0 12px #ff4757) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
   animation: timer-sprite-critical-pulse 0.28s infinite alternate;
 }
-.boss-timer-circle.critical .timer-sprite-glow { fill: #ff4757; }
-.boss-timer-circle.critical .timer-sprite-spark { fill: #ff6b81; }
 
-@keyframes timer-sprite-twinkle {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.15); }
-  100% { transform: rotate(360deg) scale(1); }
+@keyframes timer-sprite-flutter {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.08) rotate(4deg); }
+  100% { transform: scale(0.96) rotate(-3deg); }
 }
 
 @keyframes timer-sprite-bob {
   0% { transform: translateX(-50%) translateY(0); }
-  100% { transform: translateX(-50%) translateY(-2px); }
+  100% { transform: translateX(-50%) translateY(-3px); }
 }
 
 @keyframes timer-sprite-critical-pulse {
   0% { transform: translateX(-50%) scale(1.1); }
-  100% { transform: translateX(-50%) scale(1.4) rotate(18deg); }
+  100% { transform: translateX(-50%) scale(1.35) rotate(15deg); }
 }
 
 .timer-svg {

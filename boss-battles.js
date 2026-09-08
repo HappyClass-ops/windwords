@@ -54,11 +54,7 @@ window.PipBossBattle = (() => {
       orbitNode.setAttribute('aria-hidden', 'true');
       orbitNode.innerHTML = `
         <span class="timer-sprite-runner">
-          <svg viewBox="0 0 24 24" class="timer-sprite-svg" aria-hidden="true">
-            <circle class="timer-sprite-glow" cx="12" cy="12" r="8"></circle>
-            <path class="timer-sprite-spark" d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"></path>
-            <circle class="timer-sprite-core" cx="12" cy="12" r="3.5"></circle>
-          </svg>
+          <img src="assets/sprites/timer_fairy_frame3.png" class="timer-sprite-img" alt="" />
         </span>
       `;
       timerCircle.appendChild(orbitNode);
