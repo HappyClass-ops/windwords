@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="picture-book.css">
   <link rel="stylesheet" href="adventure.css">
   <link rel="stylesheet" href="world.css">
+  <link rel="stylesheet" href="boss-battles.css">
   <link rel="icon" href="assets/journey/sky.webp" type="image/webp">
 </head>
 <body>
@@ -41,6 +42,14 @@
         </div>
       </section>
     </header>
+
+    <section class="boss-container" id="bossContainer" aria-live="polite" hidden>
+      <div class="boss-heading"><span class="boss-stage">Checkpoint battle</span><strong class="boss-name">Checkpoint guardian</strong></div>
+      <div class="boss-sprite" role="img" aria-label="Checkpoint guardian"><i class="boss-crown"></i><i class="boss-face"></i><i class="boss-core"></i><i class="boss-arm left"></i><i class="boss-arm right"></i></div>
+      <div class="boss-health-bar" aria-label="Boss calm meter"><i class="boss-health-fill"></i></div>
+      <div class="urgency-meter" aria-label="Time until the next boss move"><i class="urgency-fill"></i></div>
+      <span class="boss-live screen-reader-only"></span>
+    </section>
 
     <section class="world" id="world" aria-label="Choose a word island">
       <div class="island anchor" id="startIsland" aria-hidden="true"><div class="island-inner"><img class="island-art" src="assets/wind-island-v2.webp" alt=""></div></div>
@@ -171,6 +180,7 @@
   <script src="practice.js"></script>
   <script src="wardrobe.js"></script>
   <script src="challenge.js"></script>
+  <script src="boss-battles.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

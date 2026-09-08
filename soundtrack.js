@@ -9,6 +9,10 @@ window.PipSoundtrack = (() => {
     sky:{bpm:104,root:62,scale:[0,2,4,7,9],chords:[0,4,3,0],melody:[0,1,2,-1,3,2,4,3,2,-1,1,2,3,1,0,-1],tone:'triangle',ambience:'village'},
     forest:{bpm:86,root:57,scale:[0,2,3,7,9],chords:[0,3,1,4],melody:[0,2,-1,3,1,-1,2,4,3,-1,2,1,0,-1,1,-1],tone:'triangle',ambience:'forest'},
     crystal:{bpm:78,root:64,scale:[0,2,4,6,9],chords:[0,3,2,4],melody:[4,-1,2,-1,3,1,-1,2,0,-1,4,3,-1,2,1,-1],tone:'sine',ambience:'crystal'},
+    'boss-moss':{bpm:132,root:50,scale:[0,2,3,7,9],chords:[0,3,1,4],melody:[0,2,3,1,4,3,2,0,1,3,4,2,3,1,2,0],tone:'triangle',track:'assets/audio/boss/boss-moss.mp3'},
+    'boss-kraken':{bpm:138,root:43,scale:[0,2,3,7,10],chords:[0,4,1,3],melody:[0,3,2,4,3,1,4,2,0,2,4,3,1,3,2,0],tone:'sawtooth',track:'assets/audio/boss/boss-kraken.mp3'},
+    'boss-gale':{bpm:144,root:52,scale:[0,2,5,7,9],chords:[0,3,4,1],melody:[0,2,4,3,1,4,2,3,0,3,4,2,1,4,3,0],tone:'triangle',track:'assets/audio/boss/boss-gale.mp3'},
+    'boss-volcano':{bpm:150,root:40,scale:[0,1,3,7,8],chords:[0,1,4,3],melody:[0,2,3,4,3,2,4,1,0,3,4,2,3,1,4,0],tone:'sawtooth',track:'assets/audio/boss/boss-volcano.mp3'},
     finale:{bpm:124,root:45,scale:[0,2,3,7,10],chords:[0,3,1,4],melody:[0,2,3,4,3,2,1,0,4,3,2,4,3,1,2,0],tone:'triangle',ambience:'volcano'},
     volcano:{bpm:112,root:45,scale:[0,2,3,7,10],chords:[0,1,3,0],melody:[0,-1,0,2,3,-1,2,1,0,2,3,-1,4,3,2,-1],tone:'triangle',ambience:'volcano'}
   };
@@ -55,7 +59,7 @@ window.PipSoundtrack = (() => {
     if(active?.name===current){volume();active.audio.play().catch(()=>{});return;}
     retire(active);
     const bus=context.createGain();bus.gain.value=0;bus.connect(context.destination);
-    const audio=new Audio(`assets/audio/zones/${themes[current].ambience}-ambience.mp3`);
+    const audio=new Audio(themes[current].track||`assets/audio/zones/${themes[current].ambience}-ambience.mp3`);
     audio.loop=true;audio.preload='none';audio.volume=.48;
     const source=context.createMediaElementSource(audio);source.connect(bus);
     active={name:current,bus,audio,source,next:context.currentTime+.03,step:0};
@@ -77,5 +81,5 @@ window.PipSoundtrack = (() => {
   document.addEventListener('pointerdown',unlock,{passive:true});
   document.addEventListener('keydown',unlock);
   document.addEventListener('visibilitychange',refresh);
-  return {configure(options){enabled=options.enabled||enabled;},scene,unlock,refresh,duck(on){ducked=on;volume();},get current(){return current;}};
+  return {configure(options){enabled=options.enabled||enabled;},scene,unlock,refresh,duck(on){ducked=on;volume();},get current(){return current==='boss-volcano'?'finale':current;},get battle(){return current.startsWith('boss-')?current:'';}};
 })();

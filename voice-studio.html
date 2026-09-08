@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pip’s Voice Audition Studio & Chipmunk Pitch Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d2229;
+      --card-bg: #15323c;
+      --card-surface: #1e424e;
+      --accent-teal: #36ffd2;
+      --accent-gold: #ffc247;
+      --accent-coral: #ff7563;
+      --accent-chipmunk: #ff9d42;
+      --text-main: #f0fdfa;
+      --text-muted: #94b8c2;
+      --border: #2a5563;
+      --radius: 16px;
+      --font-body: 'Nunito', system-ui, sans-serif;
+      --font-display: 'Fredoka', cursive, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      padding: 28px 20px 80px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand img {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      object-position: 0 0;
+      background: var(--card-surface);
+      border-radius: 14px;
+      padding: 4px;
+      border: 2px solid var(--accent-coral);
+    }
+
+    .brand h1 {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+
+    .brand p {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .top-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-badge {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .stat-badge small {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-badge strong {
+      font-size: 17px;
+      color: var(--accent-gold);
+      font-family: var(--font-display);
+    }
+
+    .credit-saver-banner {
+      background: linear-gradient(135deg, rgba(255, 194, 71, 0.15), rgba(54, 255, 210, 0.1));
+      border: 1px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .credit-saver-banner strong {
+      color: var(--accent-gold);
+    }
+
+    .api-key-bar {
+      background: rgba(21, 50, 60, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+
+    .api-key-bar input {
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+
+    .audition-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .audition-card.pip-card {
+      border-top: 4px solid var(--accent-coral);
+    }
+
+    .audition-card.narrator-card {
+      border-top: 4px solid var(--accent-teal);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .role-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .card-header h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .card-header p {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 12px 0 6px;
+    }
+
+    .voice-select {
+      width: 100%;
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .voice-select option {
+      background: #142a32;
+      color: #fff;
+    }
+
+    .quick-lines {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .line-chip {
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .line-chip:hover {
+      background: rgba(54, 255, 210, 0.15);
+      border-color: var(--accent-teal);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .line-chip.active {
+      background: var(--accent-teal);
+      color: #0d2229;
+      border-color: var(--accent-teal);
+    }
+
+    textarea.script-input {
+      width: 100%;
+      min-height: 68px;
+      background: #0f2730;
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 10px;
+      resize: vertical;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    textarea.script-input:focus {
+      outline: 2px solid var(--accent-teal);
+      border-color: transparent;
+    }
+
+    /* CHIPMUNK CONTROL BOX */
+    .chipmunk-box {
+      background: linear-gradient(135deg, rgba(255, 157, 66, 0.12), rgba(255, 117, 99, 0.08));
+      border: 2px solid var(--accent-chipmunk);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .chipmunk-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chipmunk-header strong {
+      color: var(--accent-chipmunk);
+      font-size: 13px;
+      font-family: var(--font-display);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chipmunk-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .chipmunk-presets button {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 140ms ease;
+    }
+
+    .chipmunk-presets button:hover {
+      background: var(--accent-chipmunk);
+      color: #000;
+    }
+
+    .chipmunk-presets button.selected {
+      background: var(--accent-chipmunk);
+      color: #0d2229;
+      border-color: #fff;
+    }
+
+    .slider-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .tuning-control label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+
+    .tuning-control input[type=range] {
+      width: 100%;
+      accent-color: var(--accent-chipmunk);
+      cursor: pointer;
+    }
+
+    .btn-audition {
+      width: 100%;
+      min-height: 48px;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 160ms ease, filter 160ms ease;
+      margin-top: 6px;
+    }
+
+    .pip-card .btn-audition {
+      background: linear-gradient(135deg, #ff8170, #ea5a46);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(234, 90, 70, 0.4);
+    }
+
+    .narrator-card .btn-audition {
+      background: linear-gradient(135deg, #36ffd2, #18b394);
+      color: #0c2b27;
+      box-shadow: 0 4px 14px rgba(54, 255, 210, 0.35);
+    }
+
+    .btn-audition:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-audition:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-zero-credits {
+      background: rgba(255, 157, 66, 0.2);
+      border: 1px dashed var(--accent-chipmunk);
+      color: var(--accent-chipmunk);
+      width: 100%;
+      min-height: 38px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 140ms ease;
+    }
+
+    .btn-zero-credits:hover {
+      background: rgba(255, 157, 66, 0.35);
+      color: #fff;
+    }
+
+    .cost-hint {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-top: 8px;
+    }
+
+    .player-box {
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .player-box audio {
+      width: 100%;
+      height: 36px;
+      outline: none;
+    }
+
+    /* HISTORY COMPARISON */
+    .history-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .history-header h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-item {
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .history-item .role-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .role-tag.pip { background: rgba(255, 117, 99, 0.2); color: var(--accent-coral); }
+    .role-tag.narrator { background: rgba(54, 255, 210, 0.2); color: var(--accent-teal); }
+
+    .history-item .text-col {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 180px;
+    }
+
+    .history-item .voice-info {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-lock-settings {
+      background: var(--accent-teal);
+      color: #0c2b27;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .btn-lock-settings:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .status-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #16434f;
+      border: 2px solid var(--accent-teal);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .studio-grid { grid-template-columns: 1fr; }
+      .slider-row { grid-template-columns: 1fr; }
+      .chipmunk-presets { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <img src="assets/pip-sprite-atlas-v4.webp" alt="Pip">
+        <div>
+          <h1>Pip’s Voice Audition Studio</h1>
+          <p>Audition live Chipmunk pitches & Narrator voices with 0-credit live testing</p>
+        </div>
+      </div>
+      <div class="top-stats">
+        <div class="stat-badge">
+          <small>Total Free Credits</small>
+          <strong>10,000</strong>
+        </div>
+        <div class="stat-badge">
+          <small>Credits Remaining</small>
+          <strong id="liveCredits">--</strong>
+        </div>
+      </div>
+    </header>
+
+    <div class="credit-saver-banner">
+      <div>
+        ⚡ <strong>Credit-Saver Activated:</strong> Powered by <strong>ElevenLabs Flash v2.5 (50% cheaper)</strong>.
+        Test with short phrases (~5–10 credits). Once generated, test <strong>unlimited pitch levels for FREE</strong> without re-calling ElevenLabs!
+      </div>
+      <button class="line-chip" id="refreshBalance">🔄 Check Live Balance</button>
+    </div>
+
+    <div class="api-key-bar">
+      <span>🔑 <strong>ElevenLabs API Key:</strong></span>
+      <input type="password" id="apiKeyInput" value="" autocomplete="off" placeholder="Paste a temporary ElevenLabs API key">
+      <button class="line-chip" id="toggleKey">Show Key</button>
+    </div>
+
+    <div class="studio-grid">
+      <!-- PIP CHIPMUNK CARD -->
+      <section class="audition-card pip-card" aria-label="Pip Chipmunk Audition">
+        <div class="card-header">
+          <div class="role-badge">🐿️</div>
+          <div>
+            <h2>Pip the Red Panda (Chipmunk Pitch)</h2>
+            <p>Cute, high-pitched mascot character voice</p>
+          </div>
+        </div>
+
+        <div class="section-title">Base Voice Model</div>
+        <select id="pipVoiceSelect" class="voice-select">
+          <option value="Xb7hH8MSUJpSbSDYk0k2" data-name="Alice" selected>Alice (British · Clean Educator · Best with Chipmunk Shift)</option>
+          <option value="cgSgspJ2msm6clMCkdW9" data-name="Jessica">Jessica (Playful, Bright, Cute)</option>
+          <option value="pFZP5JQG7iQjIQuC4Bku" data-name="Lily">Lily (British · Expressive)</option>
+          <option value="bIHbv24MWmeRgasZH58o" data-name="Will">Will (Young & Upbeat)</option>
+        </select>
+
+        <div class="section-title">Quick Test Phrases (Low Cost)</div>
+        <div class="quick-lines">
+          <button class="line-chip pip-quick active" data-text="Let's fly, Pip!">"Let's fly, Pip!" (15 chars · ~7 credits)</button>
+          <button class="line-chip pip-quick" data-text="We made it!">"We made it!" (11 chars · ~5 credits)</button>
+          <button class="line-chip pip-quick" data-text="Look at that!">"Look at that!" (13 chars · ~6 credits)</button>
+          <button class="line-chip pip-quick" data-text="Oh! The islands have floated into the sky, and our friends are stranded. Will you help me bring them home?">Full Story Intro (106 chars · ~53 credits)</button>
+        </div>
+
+        <div class="section-title">Script Text</div>
+        <textarea id="pipText" class="script-input">Let's fly, Pip!</textarea>
+
+        <!-- CHIPMUNK PITCH CONTROLLER -->
+        <div class="chipmunk-box">
+          <div class="chipmunk-header">
+            <strong>🐿️ Chipmunk Pitch Level</strong>
+            <span id="chipmunkLevelName" style="font-size:12px;font-weight:800;color:var(--accent-chipmunk)">Level 3: Full Chipmunk (1.65x)</span>
+          </div>
+          <div class="chipmunk-presets">
+            <button data-pitch="1.25" class="pitch-preset">1. Light Mascot</button>
+            <button data-pitch="1.45" class="pitch-preset">2. Cute Squeak</button>
+            <button data-pitch="1.65" class="pitch-preset selected">3. Chipmunk 🐿️</button>
+            <button data-pitch="1.85" class="pitch-preset">4. Alvin Level</button>
+          </div>
+          <div class="slider-row">
+            <div class="tuning-control">
+              <label><span>Pitch & Speed Multiplier</span><span id="pipPitchVal">1.65x</span></label>
+              <input type="range" id="pipPitchSlider" min="1.0" max="2.1" step="0.05" value="1.65">
+            </div>
+            <div class="tuning-control">
+              <label><span>Volume Boost</span><span id="pipVolumeVal">1.3x (Loud)</span></label>
+              <input type="range" id="pipVolumeSlider" min="1.0" max="2.0" step="0.1" value="1.3">
+            </div>
+          </div>
+        </div>
+
+        <button id="btnAuditionPip" class="btn-audition">
+          <span>▶ Generate & Audition Pip</span>
+        </button>
+        <div class="cost-hint" id="pipCost">Cost: ~7 credits (via Flash v2.5)</div>
+
+        <button id="btnReplayPipFree" class="btn-zero-credits" style="display:none">
+          <span>🔊 Replay Current Clip at Selected Pitch (0 Credits!)</span>
+        </button>
+
+        <div class="player-box" id="pipPlayerBox" hidden>
+          <audio id="pipAudio" controls></audio>
+        </div>
+      </section>
+
+      <!-- NARRATOR / TEACHER CARD -->
+      <section class="audition-card narrator-card" aria-label="Narrator Audition">
+        <div class="card-header">
+          <div class="role-badge">📖</div>
+          <div>
+            <h2>Narrator / Teacher</h2>
+            <p>Clear, warm RP British reading voice</p>
+          </div>
+        </div>
+
+        <div class="section-title">Select Voice Model</div>
+        <select id="narratorVoiceSelect" class="voice-select">
+          <option value="Xb7hH8MSUJpSbSDYk0k2" data-name="Alice" selected>Alice (British · Clear, Warm Educator)</option>
+          <option value="JBFqnCBsd6RMkjVDRZzb" data-name="George">George (British · Warm Storyteller)</option>
+          <option value="onwK4e9ZLuTAKqWW03F9" data-name="Daniel">Daniel (British · Steady Broadcaster)</option>
+          <option value="pFZP5JQG7iQjIQuC4Bku" data-name="Lily">Lily (British · Confident Actress)</option>
+        </select>
+
+        <div class="section-title">Quick Test Words</div>
+        <div class="quick-lines">
+          <button class="line-chip narrator-quick active" data-text="bright.">bright (6 chars · ~3 credits)</button>
+          <button class="line-chip narrator-quick" data-text="splash.">splash (7 chars · ~3 credits)</button>
+          <button class="line-chip narrator-quick" data-text="treasure.">treasure (9 chars · ~4 credits)</button>
+          <button class="line-chip narrator-quick" data-text="whistle.">whistle (8 chars · ~4 credits)</button>
+        </div>
+
+        <div class="section-title">Script / Word to Read</div>
+        <textarea id="narratorText" class="script-input">bright.</textarea>
+
+        <div class="slider-row" style="background:rgba(0,0,0,0.15);padding:12px;border-radius:10px;margin-bottom:14px">
+          <div class="tuning-control">
+            <label><span>Reading Pace</span><span id="narratorSpeedVal">0.88x (Calm)</span></label>
+            <input type="range" id="narratorSpeed" min="0.75" max="1.1" step="0.02" value="0.88">
+          </div>
+          <div class="tuning-control">
+            <label><span>Voice Stability</span><span id="narratorStabilityVal">0.85 (Steady)</span></label>
+            <input type="range" id="narratorStability" min="0.5" max="1.0" step="0.05" value="0.85">
+          </div>
+        </div>
+
+        <button id="btnAuditionNarrator" class="btn-audition">
+          <span>▶ Audition Narrator</span>
+        </button>
+        <div class="cost-hint" id="narratorCost">Cost: ~3 credits (via Flash v2.5)</div>
+
+        <div class="player-box" id="narratorPlayerBox" hidden>
+          <audio id="narratorAudio" controls></audio>
+        </div>
+      </section>
+    </div>
+
+    <!-- AUDITION HISTORY -->
+    <section class="history-section">
+      <div class="history-header">
+        <div>
+          <h3>Audition History & Side-by-Side Comparison</h3>
+          <p style="color:var(--text-muted);font-size:13px">Compare clips you've generated in this session.</p>
+        </div>
+        <button id="btnSaveConfig" class="btn-lock-settings">💾 Lock Selected Settings for Game</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <p style="color:var(--text-muted);font-size:14px;padding:12px">No samples generated yet. Click "Audition" above to test a line.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="status-toast" id="toast"></div>
+
+  <script>
+    const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1/text-to-speech/';
+    const history = [];
+    let lastPipBlob = null;
+    let lastPipAudioBuffer = null;
+    let audioCtx = null;
+
+    const $ = id => document.getElementById(id);
+
+    function showToast(msg) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3200);
+    }
+
+    $('toggleKey').onclick = () => {
+      const inp = $('apiKeyInput');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      $('toggleKey').textContent = inp.type === 'password' ? 'Show Key' : 'Hide Key';
+    };
+
+    function updateCosts() {
+      const pChars = $('pipText').value.trim().length;
+      const pCredits = Math.ceil(pChars * 0.5);
+      $('pipCost').textContent = `Cost: ~${pCredits} credits (${pChars} chars · via Flash v2.5)`;
+
+      const nChars = $('narratorText').value.trim().length;
+      const nCredits = Math.ceil(nChars * 0.5);
+      $('narratorCost').textContent = `Cost: ~${nCredits} credits (${nChars} chars · via Flash v2.5)`;
+    }
+    $('pipText').addEventListener('input', updateCosts);
+    $('narratorText').addEventListener('input', updateCosts);
+    updateCosts();
+
+    // Chipmunk Presets
+    const presetNames = {
+      '1.25': 'Level 1: Light Mascot (1.25x)',
+      '1.45': 'Level 2: Cute Squeak (1.45x)',
+      '1.65': 'Level 3: Chipmunk 🐿️ (1.65x)',
+      '1.85': 'Level 4: Alvin Level 🐿️🐿️ (1.85x)',
+      '2.05': 'Level 5: Tiny Hamster (2.05x)'
+    };
+
+    function setChipmunkRate(rate) {
+      $('pipPitchSlider').value = rate;
+      $('pipPitchVal').textContent = rate + 'x';
+      $('chipmunkLevelName').textContent = presetNames[rate] || `${rate}x Pitch`;
+      document.querySelectorAll('.pitch-preset').forEach(b => {
+        b.classList.toggle('selected', parseFloat(b.dataset.pitch) === parseFloat(rate));
+      });
+      // If we already have audio, replay it immediately at this new pitch for 0 credits!
+      if (lastPipBlob) {
+        playChipmunkAudio(parseFloat(rate), parseFloat($('pipVolumeSlider').value));
+      }
+    }
+
+    document.querySelectorAll('.pitch-preset').forEach(b => {
+      b.onclick = () => setChipmunkRate(b.dataset.pitch);
+    });
+
+    $('pipPitchSlider').oninput = e => {
+      const rate = e.target.value;
+      $('pipPitchVal').textContent = rate + 'x';
+      $('chipmunkLevelName').textContent = `${rate}x Pitch`;
+      document.querySelectorAll('.pitch-preset').forEach(b => {
+        b.classList.toggle('selected', parseFloat(b.dataset.pitch) === parseFloat(rate));
+      });
+    };
+
+    $('pipVolumeSlider').oninput = e => {
+      $('pipVolumeVal').textContent = e.target.value + 'x';
+    };
+
+    $('narratorSpeed').oninput = e => $('narratorSpeedVal').textContent = e.target.value + 'x';
+    $('narratorStability').oninput = e => $('narratorStabilityVal').textContent = e.target.value;
+
+    document.querySelectorAll('.pip-quick').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('.pip-quick').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        $('pipText').value = b.dataset.text;
+        updateCosts();
+      };
+    });
+
+    document.querySelectorAll('.narrator-quick').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('.narrator-quick').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        $('narratorText').value = b.dataset.text;
+        updateCosts();
+      };
+    });
+
+    async function checkBalance() {
+      const key = $('apiKeyInput').value.trim();
+      if (!key) return;
+      try {
+        const now = Date.now();
+        const r = await fetch(`https://api.elevenlabs.io/v1/usage/character-stats?start_unix=${now - 86400000}&end_unix=${now}`, {
+          headers: { 'xi-api-key': key }
+        });
+        if (r.ok) {
+          const d = await r.json();
+          let usedToday = 0;
+          if (d.usage && d.usage.All) {
+            usedToday = d.usage.All.reduce((a, b) => a + b, 0);
+          }
+          const remaining = Math.max(0, 10000 - usedToday);
+          $('liveCredits').textContent = `${remaining.toLocaleString()} left`;
+        }
+      } catch {
+        $('liveCredits').textContent = 'Ready';
+      }
+    }
+    $('refreshBalance').onclick = checkBalance;
+    checkBalance();
+
+    // Pure Web Audio Chipmunk Player (Zero API calls, Zero Credits)
+    async function playChipmunkAudio(rate, volume) {
+      if (!lastPipBlob) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+      if (!lastPipAudioBuffer) {
+        const ab = await lastPipBlob.arrayBuffer();
+        lastPipAudioBuffer = await audioCtx.decodeAudioData(ab.slice(0));
+      }
+
+      const source = audioCtx.createBufferSource();
+      source.buffer = lastPipAudioBuffer;
+      source.playbackRate.value = rate; // Pure resample chipmunk pitch
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = volume;
+
+      source.connect(gain);
+      gain.connect(audioCtx.destination);
+      source.start(0);
+
+      showToast(`Playing Chipmunk at ${rate}x (0 credits used)`);
+    }
+
+    $('btnReplayPipFree').onclick = () => {
+      playChipmunkAudio(parseFloat($('pipPitchSlider').value), parseFloat($('pipVolumeSlider').value));
+    };
+
+    // ElevenLabs Flash Synthesis
+    async function generateSpeech({ text, voiceId, voiceName, role, speed, stability }) {
+      const key = $('apiKeyInput').value.trim();
+      if (!key) { alert('Please enter an ElevenLabs API key.'); return null; }
+
+      const btn = role === 'pip' ? $('btnAuditionPip') : $('btnAuditionNarrator');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Synthesizing (Flash v2.5)...</span>';
+
+      try {
+        const clean = text.trim();
+        const url = `${ELEVENLABS_ENDPOINT}${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'audio/mpeg',
+            'xi-api-key': key
+          },
+          body: JSON.stringify({
+            text: clean,
+            model_id: 'eleven_flash_v2_5', // 50% cheaper
+            voice_settings: {
+              stability: stability || 0.85,
+              similarity_boost: 0.85,
+              style: 0,
+              speed: speed || 0.9
+            }
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData?.detail?.message || `HTTP ${res.status}`);
+        }
+
+        const blob = await res.blob();
+        checkBalance();
+        return blob;
+      } catch (err) {
+        alert(`Synthesis failed: ${err.message}`);
+        return null;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = role === 'pip' ? '<span>▶ Generate & Audition Pip</span>' : '<span>▶ Audition Narrator</span>';
+      }
+    }
+
+    // Pip Audition
+    $('btnAuditionPip').onclick = async () => {
+      const sel = $('pipVoiceSelect');
+      const voiceId = sel.value;
+      const voiceName = sel.selectedOptions[0].dataset.name;
+      const text = $('pipText').value;
+      const pitch = parseFloat($('pipPitchSlider').value);
+      const volume = parseFloat($('pipVolumeSlider').value);
+
+      const blob = await generateSpeech({ text, voiceId, voiceName, role: 'pip', speed: 1.0, stability: 0.75 });
+      if (blob) {
+        lastPipBlob = blob;
+        lastPipAudioBuffer = null; // reset buffer cache for new clip
+
+        const pBox = $('pipPlayerBox');
+        pBox.hidden = false;
+        $('btnReplayPipFree').style.display = 'flex';
+
+        // Play with Chipmunk Web Audio Engine
+        playChipmunkAudio(pitch, volume);
+
+        const audioUrl = URL.createObjectURL(blob);
+        $('pipAudio').src = audioUrl;
+
+        addToHistory({ role: 'pip', voiceName, voiceId, text, audioUrl, pitch, volume });
+      }
+    };
+
+    // Narrator Audition
+    $('btnAuditionNarrator').onclick = async () => {
+      const sel = $('narratorVoiceSelect');
+      const voiceId = sel.value;
+      const voiceName = sel.selectedOptions[0].dataset.name;
+      const text = $('narratorText').value;
+      const speed = parseFloat($('narratorSpeed').value);
+      const stability = parseFloat($('narratorStability').value);
+
+      const blob = await generateSpeech({ text, voiceId, voiceName, role: 'narrator', speed, stability });
+      if (blob) {
+        const audioUrl = URL.createObjectURL(blob);
+        const pBox = $('narratorPlayerBox');
+        pBox.hidden = false;
+        const player = $('narratorAudio');
+        player.src = audioUrl;
+        player.playbackRate = speed;
+        player.play();
+
+        addToHistory({ role: 'narrator', voiceName, voiceId, text, audioUrl, speed });
+      }
+    };
+
+    function addToHistory({ role, voiceName, voiceId, text, audioUrl, pitch, speed }) {
+      const list = $('historyList');
+      if (history.length === 0) list.innerHTML = '';
+      history.unshift({ role, voiceName, voiceId, text, audioUrl });
+
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `
+        <span class="role-tag ${role}">${role === 'pip' ? '🐿️ Pip (Chipmunk)' : '📖 Narrator'}</span>
+        <div class="text-col">
+          <div>"${text}"</div>
+          <div class="voice-info">${voiceName} (${voiceId}) ${pitch ? `· Chipmunk Pitch: ${pitch}x` : `· Speed: ${speed}x`}</div>
+        </div>
+        <audio controls src="${audioUrl}"></audio>
+        <a href="${audioUrl}" download="${role}-${text.slice(0, 15).replace(/[^a-z0-9]/gi, '_')}.mp3" class="line-chip" style="text-decoration:none">⬇ Save MP3</a>
+      `;
+      list.prepend(item);
+    }
+
+    // Save Configuration
+    $('btnSaveConfig').onclick = () => {
+      const pipSel = $('pipVoiceSelect');
+      const narratorSel = $('narratorVoiceSelect');
+
+      const config = {
+        pipVoiceId: pipSel.value,
+        pipVoiceName: pipSel.selectedOptions[0].dataset.name,
+        pipChipmunkPitch: parseFloat($('pipPitchSlider').value),
+        pipVolumeBoost: parseFloat($('pipVolumeSlider').value),
+        narratorVoiceId: narratorSel.value,
+        narratorVoiceName: narratorSel.selectedOptions[0].dataset.name,
+        narratorSpeed: parseFloat($('narratorSpeed').value),
+        narratorStability: parseFloat($('narratorStability').value),
+        modelId: 'eleven_flash_v2_5'
+      };
+
+      localStorage.setItem('windwords_chosen_voices', JSON.stringify(config));
+      showToast(`Settings Locked: Pip (${config.pipVoiceName} @ ${config.pipChipmunkPitch}x Chipmunk) & Narrator (${config.narratorVoiceName})`);
+      console.log('Saved configuration:', config);
+    };
+  </script>
+</body>
+</html>

@@ -1,5 +1,9 @@
 # Resume here
 
+## 8 September 2026 — checkpoint boss release candidate
+
+All four phase checkpoints now have distinct code-native boss presentation, local voice lines, local Pixabay battle music plus procedural layers, timed hazards and child-safe recovery. Phase 5 remains a three-stage Classic finale (nouns, verbs, adverbs); Learning keeps one slower guided round and the preserved three-right-island contract. `tests/boss-battles.cjs` covers boss profiles, themes, music, timer pressure and the one-heart safety floor. Full-suite and deployment evidence belongs in the release commit/turn that follows this note. See `docs/BOSS-BATTLES.md` for mechanics, audio attribution and future sprite-atlas specifications.
+
 Date: 2026-09-06. Runtime abb95a7 is committed and pushed to main; Pages builds automatically.
 Owner authorized push and GitHub Pages deployment after verification. No subagents,
 paid generation, new credits or resets. Read only the assigned area and live issue.
