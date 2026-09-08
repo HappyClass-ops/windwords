@@ -1,7 +1,7 @@
 /* Upgraded boss presentation, circular countdown, persistent health, and sprite animations. */
 window.PipBossBattle = (() => {
   'use strict';
-  let root, nameNode, stageNode, fillNode, liveNode, spriteNode, imgNode, timerCircle, secondsNode, timerProgress;
+  let root, nameNode, stageNode, fillNode, liveNode, spriteNode, imgNode, timerCircle, secondsNode, timerProgress, orbitNode;
   let timer, deadline, duration, pausedRemaining = 0, profile, onExpire, encounterTotal = 5, currentHitsLeft = 5;
 
   const ASSET_MAP = {
@@ -47,6 +47,22 @@ window.PipBossBattle = (() => {
     timerCircle = root.querySelector('.boss-timer-circle');
     secondsNode = root.querySelector('.timer-seconds');
     timerProgress = root.querySelector('.timer-ring');
+    orbitNode = root.querySelector('.timer-orbit-tracker');
+    if (!orbitNode && timerCircle) {
+      orbitNode = document.createElement('div');
+      orbitNode.className = 'timer-orbit-tracker';
+      orbitNode.setAttribute('aria-hidden', 'true');
+      orbitNode.innerHTML = `
+        <span class="timer-sprite-runner">
+          <svg viewBox="0 0 24 24" class="timer-sprite-svg" aria-hidden="true">
+            <circle class="timer-sprite-glow" cx="12" cy="12" r="8"></circle>
+            <path class="timer-sprite-spark" d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"></path>
+            <circle class="timer-sprite-core" cx="12" cy="12" r="3.5"></circle>
+          </svg>
+        </span>
+      `;
+      timerCircle.appendChild(orbitNode);
+    }
   }
 
   function announce(message) {
@@ -82,6 +98,10 @@ window.PipBossBattle = (() => {
       timerProgress.style.strokeDasharray = String(circumference);
     }
     if (secondsNode) secondsNode.textContent = String(secs);
+    if (orbitNode) {
+      const angle = (1 - ratio) * 360;
+      orbitNode.style.transform = `rotate(${angle.toFixed(1)}deg)`;
+    }
 
     root.classList.toggle('boss-warning', ratio <= 0.32);
     if (timerCircle) {
@@ -112,6 +132,7 @@ window.PipBossBattle = (() => {
     deadline = performance.now() + duration;
     pausedRemaining = 0;
     if (fillNode) fillNode.style.transform = 'scaleX(1)';
+    if (orbitNode) orbitNode.style.transform = 'rotate(0deg)';
     root.classList.remove('boss-warning');
     if (timerCircle) timerCircle.classList.remove('warning', 'critical');
     timer = setInterval(drawTimer, 100);

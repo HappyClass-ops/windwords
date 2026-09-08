@@ -99,14 +99,14 @@
   box-shadow: 0 0 14px rgba(255, 40, 70, 0.9);
 }
 
-/* Boss Arena Enemy (Centred behind islands) */
+/* Boss Arena Enemy (Centred behind islands - enlarged for commanding presence) */
 .boss-sprite {
   position: absolute;
   left: 50%;
-  top: 32%;
-  transform: translate(-50%, -25%);
-  width: clamp(260px, 34vw, 440px);
-  height: clamp(260px, 34vw, 440px);
+  top: 31%;
+  transform: translate(-50%, -22%);
+  width: clamp(320px, 42vw, 540px);
+  height: clamp(320px, 42vw, 540px);
   z-index: 6;
   pointer-events: none;
   display: flex;
@@ -174,20 +174,118 @@
 
 
 
-/* Circular Timer Widget */
+/* Circular Timer Widget with Orbiting Countdown Sprite */
 .boss-timer-circle {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(12, 28, 50, 0.9);
+  background: rgba(12, 28, 50, 0.92);
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
   flex-shrink: 0;
   pointer-events: none;
+  overflow: visible;
+}
+
+/* Orbit tracker that circles around the timer dial as time elapses */
+.timer-orbit-tracker {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  border-radius: 50%;
+  transform-origin: center center;
+  transition: transform 0.1s linear;
+  z-index: 10;
+}
+
+/* Timer sprite running around the ring perimeter */
+.timer-sprite-runner {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(46, 213, 115, 0.9));
+  animation: timer-sprite-bob 1.4s ease-in-out infinite alternate;
+}
+
+.timer-sprite-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: timer-sprite-twinkle 2.4s linear infinite;
+}
+
+.timer-sprite-glow {
+  fill: #2ed573;
+  opacity: 0.45;
+  filter: blur(2px);
+}
+
+.timer-sprite-spark {
+  fill: #7bed9f;
+  filter: drop-shadow(0 0 3px #2ed573);
+}
+
+.timer-sprite-core {
+  fill: #ffffff;
+}
+
+/* Boss specific sprite themes */
+.boss-container[data-boss="moss"] .timer-sprite-glow { fill: #2ed573; }
+.boss-container[data-boss="moss"] .timer-sprite-spark { fill: #7bed9f; }
+
+.boss-container[data-boss="kraken"] .timer-sprite-glow { fill: #1e90ff; }
+.boss-container[data-boss="kraken"] .timer-sprite-spark { fill: #70a1ff; }
+.boss-container[data-boss="kraken"] .timer-sprite-runner { filter: drop-shadow(0 0 6px rgba(30, 144, 255, 0.95)); }
+
+.boss-container[data-boss="gale"] .timer-sprite-glow { fill: #00d2d3; }
+.boss-container[data-boss="gale"] .timer-sprite-spark { fill: #c8d6e5; }
+.boss-container[data-boss="gale"] .timer-sprite-runner { filter: drop-shadow(0 0 6px rgba(0, 210, 211, 0.95)); }
+
+.boss-container[data-boss="volcano"] .timer-sprite-glow { fill: #ff4757; }
+.boss-container[data-boss="volcano"] .timer-sprite-spark { fill: #ffa502; }
+.boss-container[data-boss="volcano"] .timer-sprite-runner { filter: drop-shadow(0 0 8px rgba(255, 71, 87, 0.98)); }
+
+/* Urgency warning states */
+.boss-timer-circle.warning .timer-sprite-runner {
+  filter: drop-shadow(0 0 8px #ffa502);
+}
+.boss-timer-circle.warning .timer-sprite-glow { fill: #ffa502; }
+.boss-timer-circle.warning .timer-sprite-spark { fill: #ffbe76; }
+
+.boss-timer-circle.critical .timer-sprite-runner {
+  filter: drop-shadow(0 0 10px #ff4757);
+  animation: timer-sprite-critical-pulse 0.28s infinite alternate;
+}
+.boss-timer-circle.critical .timer-sprite-glow { fill: #ff4757; }
+.boss-timer-circle.critical .timer-sprite-spark { fill: #ff6b81; }
+
+@keyframes timer-sprite-twinkle {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes timer-sprite-bob {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-2px); }
+}
+
+@keyframes timer-sprite-critical-pulse {
+  0% { transform: translateX(-50%) scale(1.1); }
+  100% { transform: translateX(-50%) scale(1.4) rotate(18deg); }
 }
 
 .timer-svg {
