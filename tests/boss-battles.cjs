@@ -70,9 +70,11 @@ const server=http.createServer((req,res)=>{
     assert(initialHealthScale.includes('scaleX(1)'), 'Health bar must start 100% full');
     assert.equal(await page.evaluate(()=>PipSoundtrack.battle),'boss-moss');
 
-    // Timer attacks reduce hearts
-    await page.waitForFunction(()=>testGame.state.hearts<3,null,{timeout:3000});
-    console.log('Timer attack verified.');
+    // Timer drops replace an island without reducing hearts (Pip does not lose a life)
+    await page.waitForTimeout(600); // Allow 250ms timer to drop
+    const heartsAfterDrop = await page.evaluate(() => testGame.state.hearts);
+    assert.equal(heartsAfterDrop, 3, 'Pip must not lose a life when timer drops');
+    console.log('Timer drop verified: island replaced, no life lost.');
 
     // Test landing damages boss and decrements bossRemaining
     const initialHits = await page.evaluate(()=>testGame.state.bossRemaining);

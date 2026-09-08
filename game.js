@@ -269,9 +269,9 @@
     
     target.classList.add('hazard-telegraphed');
     els.game.classList.remove('boss-hazard-flash');void els.game.offsetWidth;els.game.classList.add('boss-hazard-flash');
-    setTimeout(()=>els.game.classList.remove('boss-hazard-flash'),500);
+    setTimeout(()=>els.game.classList.remove('boss-hazard-flash'),400);
     sound.boom();
-    await sleep(600); // Appreciable telegraph
+    await sleep(350); // Snappy telegraph
     if(epoch!==runEpoch)return;
     if (target === state.anchor) return; // Fair movement: never destroy Pip's platform!
     target.classList.remove('hazard-telegraphed');
@@ -279,12 +279,10 @@
     target.setAttribute('aria-disabled','true');
     target.setAttribute('tabindex','-1');
     
-    // Slow down takeover sequence so player can appreciate it (1800ms)
-    setTimeout(() => {
-      if (epoch === runEpoch && target.isConnected && target !== state.anchor) {
-        respawnBossIsland(target);
-      }
-    }, 1800);
+    // Drop and replace the island right away so fresh words keep circulating
+    if (target.isConnected && target !== state.anchor) {
+      respawnBossIsland(target);
+    }
 
     if(profile.learning){
       toast(profile.hint);PipBossBattle.announce(profile.hint);
@@ -292,24 +290,8 @@
       return;
     }
     
-    if(PipSupplies.consumeShield()) {
-      toast('Cloud shield blocked the boss move!');
-    } else {
-      if (!adminGodMode) state.hearts -= 1;
-      updateHud();
-      toast(`${profile.attack} Pip has ${state.hearts} heart${state.hearts===1?'':'s'} left.`, true);
-      if (state.hearts <= 0) {
-        state.running = false;
-        PipBossBattle.stop();
-        sound.boom();
-        await sleep(400);
-        if(epoch!==runEpoch)return;
-        await reviewWords(state.missedWords,{eyebrow:'Words to practise',title:'The boss was formidable',lastLabel:'Try again'});
-        if(epoch!==runEpoch)return;
-        showResult(false);
-        return;
-      }
-    }
+    // User requirement: "(but pip doesnt lose a life ofc)" - timer drops rotate an island without life loss
+    toast(`${profile.attack} An island shifts!`);
     pipSay('Keep going — you can do it!',1800);speakBoss(profile,profile.attack);
   }
 
@@ -451,12 +433,23 @@
     toast(state.bossRemaining ? `${state.bossRemaining} right island${state.bossRemaining === 1 ? '' : 's'} left` : (state.encounterHealth > 0 ? "Stage clear!" : "Boss calmed!"));
 
     // 3. Only after Pip safely lands on another island:
-    // the previously completed island falls and respawns with a new word. Never remove Pip's current platform.
+    // an island falls and respawns with a new word. Never remove Pip's current platform.
     if (previousAnchor && previousAnchor !== island && previousAnchor.isConnected) {
       if (previousAnchor.id === 'startIsland') {
         previousAnchor.style.display = 'none';
+        const choices = [...els.choices.querySelectorAll('.island:not(.landed-anchor)')].filter(isl => isl !== island && isl.isConnected);
+        if (choices.length) {
+          respawnBossIsland(choose(choices));
+        }
       } else {
         respawnBossIsland(previousAnchor);
+        // If no other selectable island has a correct answer, also cycle a distractor so the player isn't stranded
+        const remaining = [...els.choices.querySelectorAll('.island:not(.landed-anchor):not(.boss-hazard):not(.hazard-spent)')]
+          .filter(isl => isl !== island && isl !== previousAnchor && isl.isConnected);
+        const correctCount = remaining.filter(isl => isl.dataset.bossCorrect === 'true').length;
+        if (correctCount === 0 && remaining.length > 1) {
+          respawnBossIsland(choose(remaining));
+        }
       }
     }
 
