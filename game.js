@@ -156,7 +156,7 @@
 
   const selection=PipSelection.create(PipVocabulary.accepts);
   function makeOptions(count) { return selection.draw(playableBank(PipAdventure.settings(state.phase).wordPhase),enabledKinds(),state.targetKind,count,1); }
-  function makeBossOptions(targetPhase, count = 5, profile=PipChallenge.checkpoint(PipAdventure.mode,state.phase,state.finaleStage)) { const kinds=[...new Set([...enabledKinds(),profile.kind])],options=selection.draw(playableBank(targetPhase),kinds,state.targetKind,count,profile.right);state.bossRemaining=options.filter(o=>o.bossCorrect).length;return options; }
+  function makeBossOptions(targetPhase, count = 5, profile=PipChallenge.checkpoint(PipAdventure.mode,state.phase,state.finaleStage)) { const kinds=[...new Set([...enabledKinds(),profile.kind])],options=selection.draw(playableBank(targetPhase),kinds,state.targetKind,count,profile.right);if(!state.bossRemaining)state.bossRemaining=options.filter(o=>o.bossCorrect).length;return options; }
 
   function createIsland(option, index, count) {
     const island = document.createElement("div"); island.className = `island count-${count} pos-${String.fromCharCode(97 + index)}`; island.setAttribute("role", "button"); island.setAttribute("tabindex", "0"); island.setAttribute("aria-label", `${option.word}. Choose this word`); island.dataset.word = option.word; island.dataset.kind = option.kind; island.dataset.bossCorrect = String(Boolean(option.bossCorrect));
@@ -173,17 +173,163 @@
   function setPrompt(kind, boss = false) { els.promptCard.dataset.kind = kind; if (boss) { const profile=PipChallenge.checkpoint(PipAdventure.mode,state.phase,state.finaleStage);els.promptVerb.textContent = "Find"; els.promptKicker.textContent = `${profile.name}${profile.stages>1?' · Stage '+(profile.stage+1)+'/'+profile.stages:''}`; els.targetWord.textContent = `all the ${pluralKind(kind)}`; els.promptHelp.textContent = `${state.bossRemaining} islands are right`; } else { els.promptVerb.textContent = "Land on"; els.promptKicker.textContent = `Phase ${state.phase} · ${phaseDetails().name} · ${state.phaseScore}/${CLIMBS_PER_PHASE}`; els.targetWord.textContent = `${article(kind)} ${kind}`; els.promptHelp.textContent = KIND_HELP[kind]; } }
   function newRound() { if (!state.running) return; state.revealed.clear();state.assisted.clear(); groundPip(true); if (state.phaseScore >= CLIMBS_PER_PHASE) { beginCheckpoint(); return; } state.busy = false; state.bossMode = false; sound.scene('flight');els.game.classList.remove("at-checkpoint"); state.anchor.classList.remove("checkpoint"); clearTimeout(toast.timer); els.toast.classList.remove("show"); closeWordHelper(); state.targetKind = chooseKind(); setPrompt(state.targetKind, false); els.choices.className = ""; els.choices.innerHTML = ""; const count = choiceCount(),options=makeOptions(count);beginPractice(options); options.forEach((option, index) => placeChoice(option,index,count)); updateHud(); const lines = { noun: "Find a naming word!", verb: "Which word can I do?", adjective: "Find a describing word!", adverb: "How, when or where?" }; setTimeout(() => pipSay(lines[state.targetKind]), 220); setTimeout(() => {if(state.running&&!state.busy&&!els.wordHelper.classList.contains('show')&&!document.querySelector('.scene-dialog:not([hidden])')&&document.getElementById('supplyScene').hidden)speak(`Land on ${article(state.targetKind)} ${state.targetKind}.`);}, 340); }
 
+  function drawReplacementOption(mustBeCorrect, targetKind = state.targetKind) {
+    const bank = playableBank(state.bossTargetPhase || PipAdventure.settings(state.phase).wordPhase);
+    const kinds = enabledKinds();
+    const onScreen = new Set([...document.querySelectorAll('#choices .island')].map(isl => isl.dataset.word));
+    if (mustBeCorrect) {
+      const candidates = (bank[targetKind] || []).filter(w => !onScreen.has(w));
+      const word = choose(candidates.length ? candidates : (bank[targetKind] || ['cloud']));
+      return { word, kind: targetKind, bossCorrect: true };
+    } else {
+      const wrongKinds = kinds.filter(k => k !== targetKind);
+      const kind = choose(wrongKinds.length ? wrongKinds : kinds);
+      const candidates = (bank[kind] || []).filter(w => !onScreen.has(w) && !PipVocabulary.accepts(w, targetKind));
+      const word = choose(candidates.length ? candidates : (bank[kind] || ['stone']));
+      return { word, kind, bossCorrect: false };
+    }
+  }
+
+  async function respawnBossIsland(oldIsland, wasCorrect = false) {
+    const epoch = runEpoch;
+    const slotClass = [...oldIsland.classList].find(c => c.startsWith('pos-')) || 'pos-a';
+    const countClass = [...oldIsland.classList].find(c => c.startsWith('count-')) || 'count-5';
+    
+    // Animate old platform falling away
+    const fallMotion = oldIsland.animate([
+      { opacity: 1, transform: 'translateY(0)' },
+      { opacity: 0, transform: 'translateY(70px) scale(0.92)' }
+    ], { duration: 380, easing: 'ease-in', fill: 'forwards' });
+    await fallMotion.finished.catch(() => {});
+    oldIsland.remove();
+    if (epoch !== runEpoch || !state.bossMode) return;
+
+    // Check remaining correct islands to guarantee at least 1 reachable correct island
+    const remainingCorrect = [...els.choices.querySelectorAll('.island:not(.landed-anchor):not(.hazard-spent)')]
+      .filter(isl => isl.dataset.bossCorrect === 'true').length;
+    const forceCorrect = remainingCorrect < 1;
+    const option = drawReplacementOption(forceCorrect || wasCorrect, state.targetKind);
+    const newIsland = createIsland(option, slotClass.charCodeAt(4) - 97, countClass === 'count-6' ? 6 : 5);
+    newIsland.className = `island ${countClass} ${slotClass}`;
+    els.choices.appendChild(newIsland);
+    camera.place(newIsland);
+    newIsland.animate([
+      { opacity: 0, transform: 'translateY(24px) scale(0.96)' },
+      { opacity: 1, transform: 'translateY(0) scale(1)' }
+    ], { duration: 320, easing: 'ease-out' });
+  }
+
   async function triggerBossHazard(profile){
+    const epoch = runEpoch;
     if(!state.running||!state.bossMode||state.busy||els.wordHelper.classList.contains('show'))return;
     const className={bramble:'bramble-bound',squall:'storm-sunk',whirlwind:'wind-shrouded',lava:'lava-melted'}[profile.hazard];
-    const safeTarget=[...els.choices.querySelectorAll('.island:not(.boss-cleared):not(.hazard-spent)')].find(island=>island.dataset.bossCorrect!=='true');
-    els.game.classList.remove('boss-hazard-flash');void els.game.offsetWidth;els.game.classList.add('boss-hazard-flash');setTimeout(()=>els.game.classList.remove('boss-hazard-flash'),500);sound.boom();
-    if(safeTarget){safeTarget.classList.add('boss-hazard','hazard-spent',className);safeTarget.setAttribute('aria-disabled','true');safeTarget.setAttribute('tabindex','-1');setTimeout(()=>safeTarget.classList.remove('boss-hazard'),800);}
-    if(profile.learning){toast(profile.hint);PipBossBattle.announce(profile.hint);speakBoss(profile,profile.attack).then(()=>speak(profile.hint));return;}
-    if(PipSupplies.consumeShield())toast('Cloud shield blocked the boss move!');else{state.hearts=Math.max(1,state.hearts-1);updateHud();toast(`${profile.attack} Pip has ${state.hearts} heart${state.hearts===1?'':'s'} left.`,true);}
+    // UNIFORM selection from available choices: NEVER bias toward wrong islands! Never target Pip's current anchor!
+    const eligible=[...els.choices.querySelectorAll('.island:not(.landed-anchor):not(.hazard-spent)')];
+    if(!eligible.length)return;
+
+    // Guarantee at least 1 reachable correct island remains selectable
+    const correctCount = eligible.filter(isl => isl.dataset.bossCorrect === 'true').length;
+    let target;
+    if (correctCount <= 1 && eligible.some(isl => isl.dataset.bossCorrect !== 'true')) {
+      target = choose(eligible.filter(isl => isl.dataset.bossCorrect !== 'true'));
+    } else {
+      target = choose(eligible);
+    }
+    
+    target.classList.add('hazard-telegraphed');
+    els.game.classList.remove('boss-hazard-flash');void els.game.offsetWidth;els.game.classList.add('boss-hazard-flash');
+    setTimeout(()=>els.game.classList.remove('boss-hazard-flash'),500);
+    sound.boom();
+    await sleep(400);
+    if(epoch!==runEpoch)return;
+    target.classList.remove('hazard-telegraphed');
+    target.classList.add('boss-hazard','hazard-spent',className);
+    target.setAttribute('aria-disabled','true');
+    target.setAttribute('tabindex','-1');
+    
+    const wasCorrect = target.dataset.bossCorrect === 'true';
+    setTimeout(() => {
+      if (epoch === runEpoch && target.isConnected) {
+        respawnBossIsland(target, wasCorrect);
+      }
+    }, 700);
+
+    if(profile.learning){
+      toast(profile.hint);PipBossBattle.announce(profile.hint);
+      speakBoss(profile,profile.attack).then(()=>speak(profile.hint));
+      return;
+    }
+    
+    if(PipSupplies.consumeShield()) {
+      toast('Cloud shield blocked the boss move!');
+    } else {
+      state.hearts -= 1;
+      updateHud();
+      toast(`${profile.attack} Pip has ${state.hearts} heart${state.hearts===1?'':'s'} left.`, true);
+      if (state.hearts <= 0) {
+        state.running = false;
+        PipBossBattle.stop();
+        sound.boom();
+        await sleep(400);
+        if(epoch!==runEpoch)return;
+        await reviewWords(state.missedWords,{eyebrow:'Words to practise',title:'The boss was formidable',lastLabel:'Try again'});
+        if(epoch!==runEpoch)return;
+        showResult(false);
+        return;
+      }
+    }
     pipSay('Keep going — you can do it!',1800);speakBoss(profile,profile.attack);
   }
-  async function beginCheckpoint() { const epoch=runEpoch; if (state.bossMode || !state.running) return; state.busy = true; state.bossMode = true; state.bossTargetPhase = PipAdventure.settings(state.phase).wordPhase; state.anchor.classList.add("checkpoint"); els.game.classList.add("at-checkpoint"); setCamera(CLIMBS_PER_PHASE + 1); updateHud(); const profile=PipChallenge.checkpoint(PipAdventure.mode,state.phase,state.finaleStage),finale=profile.stages>1;els.game.classList.remove('boss-moss','boss-kraken','boss-gale','boss-volcano');els.game.classList.add('boss-active','boss-'+profile.theme);els.game.classList.toggle('finale',finale);sound.scene(profile.music);PipBossBattle.start(profile,{onExpire:triggerBossHazard,autostart:false});const preview=(profile.stages>1?'Stage '+(profile.stage+1)+' of '+profile.stages+' · ':'')+profile.label; await announceBanner("BOSS BATTLE", profile.name, preview, 2100); if (!state.running||epoch!==runEpoch) return; state.targetKind = profile.kind||chooseKind(); els.choices.className = "boss-round"; els.choices.innerHTML = ""; const options = makeBossOptions(state.bossTargetPhase, profile.count,profile);beginPractice(options); setPrompt(state.targetKind, true); options.forEach((option, index) => placeChoice(option,index,options.length)); pipSay(profile.label,2300); speakBoss(profile,profile.intro).then(()=>speak(`Find all the ${pluralKind(state.targetKind)}. ${state.bossRemaining} islands are right.`)); state.busy = false;PipBossBattle.resume();updateHud(); }
+
+  async function beginCheckpoint() {
+    const epoch = runEpoch;
+    if (state.bossMode || !state.running) return;
+    state.busy = true;
+    state.bossMode = true;
+    state.bossTargetPhase = PipAdventure.settings(state.phase).wordPhase;
+    state.anchor.classList.add("checkpoint");
+    els.game.classList.add("at-checkpoint");
+    setCamera(CLIMBS_PER_PHASE + 1);
+    updateHud();
+
+    const profile = PipChallenge.checkpoint(PipAdventure.mode, state.phase, state.finaleStage);
+    const finale = profile.stages > 1;
+    els.game.classList.remove('boss-moss', 'boss-kraken', 'boss-gale', 'boss-volcano', 'boss-won');
+    els.game.classList.add('boss-active', 'boss-' + profile.theme);
+    els.game.classList.toggle('finale', finale);
+    sound.scene(profile.music);
+
+    if (state.finaleStage === 0 || !state.encounterHealth) {
+      state.encounterHealthMax = profile.targetHits;
+      state.encounterHealth = state.encounterHealthMax;
+    }
+    state.bossRemaining = profile.right;
+
+    PipBossBattle.start(profile, {
+      onExpire: triggerBossHazard,
+      autostart: false,
+      preserveHealth: state.finaleStage > 0,
+      preserveTimer: state.finaleStage > 0
+    });
+    PipBossBattle.setHealth(state.encounterHealth, state.encounterHealthMax);
+
+    const preview = (profile.stages > 1 ? 'Stage ' + (profile.stage + 1) + ' of ' + profile.stages + ' · ' : '') + profile.label;
+    await announceBanner("BOSS BATTLE", profile.name, preview, 2100);
+    if (!state.running || epoch !== runEpoch) return;
+
+    state.targetKind = profile.kind || chooseKind();
+    els.choices.className = "boss-round";
+    els.choices.innerHTML = "";
+    const options = makeBossOptions(state.bossTargetPhase, profile.count, profile);
+    beginPractice(options);
+    setPrompt(state.targetKind, true);
+    options.forEach((option, index) => placeChoice(option, index, options.length));
+    pipSay(profile.label, 2300);
+    speakBoss(profile, profile.intro).then(() => speak(`Find all the ${pluralKind(state.targetKind)}. ${state.bossRemaining} islands are right.`));
+    state.busy = false;
+    PipBossBattle.resume(state.finaleStage > 0);
+    updateHud();
+  }
 
   function applyWardrobe(){for(const node of document.querySelectorAll('#pip .pip-sprite,#hubPip .pip-atlas-frame,#shopPip .pip-atlas-frame'))node.style.backgroundImage=wardrobe.art?'url("'+wardrobe.art+'")':'';}
   const wardrobe=PipWardrobe.create({storage:localStorage,wallet:{balance:()=>state.coins,spend:cost=>{if(state.coins<cost)return false;state.coins-=cost;store.write('coins',state.coins);updateHud();return true;}},changed:applyWardrobe});
@@ -239,7 +385,69 @@
     PipAdventure.record(state.phase,state.score-state.stageStart); return { gain, streakBonus };
   }
   async function correctChoice(island) { const epoch=runEpoch; island.classList.add("correct"); clearLandedWord(island); const reward = awardCorrect(); starReward(island,reward.gain); state.phaseScore += 1;updateBeacon(); sound.correct(); sound.coin(); burstAt(island); climbSky(); updateHud(); [...els.choices.querySelectorAll(".island")].filter(choice => choice !== island).forEach((choice, index) => { choice.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: `translate(${-135 - index * 22}%, ${42 + index * 13}%)`, opacity: 0 }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.35,.05,.8,.5)" }); }); await sleep(510);if(epoch!==runEpoch||!state.running)return; await moveNewAnchor(island); await sleep(140);if(epoch!==runEpoch||!state.running)return;newRound(); }
-  async function bossCorrectChoice(island) { const epoch=runEpoch,profile=PipChallenge.checkpoint(PipAdventure.mode,state.phase,state.finaleStage),total=profile.right; island.classList.add("correct", "boss-cleared"); clearLandedWord(island); const reward = awardCorrect(); starReward(island,reward.gain); state.bossRemaining -= 1; PipBossBattle.hit(state.bossRemaining,total);sound.correct(); sound.coin(); burstAt(island); updateHud(); toast(state.bossRemaining ? `${state.bossRemaining} right island${state.bossRemaining === 1 ? "" : "s"} left` : "Boss calmed!"); await sleep(380);if(epoch!==runEpoch)return; state.anchor = island; island.querySelectorAll("button").forEach(b=>b.disabled=true); if (state.bossRemaining <= 0){PipBossBattle.defeat();await speakBoss(profile,profile.defeat);if(epoch!==runEpoch)return;if(PipAdventure.mode==='classic'&&state.phase===5&&state.finaleStage<2){state.finaleStage++;await moveNewAnchor(island);if(epoch!==runEpoch)return;state.bossMode=false;await sleep(520);await beginCheckpoint();}else await completeCheckpoint();} else { setPrompt(state.targetKind, true); state.busy = false; setChoicesDisabled(false); } }
+  async function bossCorrectChoice(island) {
+    const epoch = runEpoch;
+    // Check if Pip is already positioned on this island (when called via handleChoice)
+    const pos = getPipPosition(island);
+    const alreadyAtIsland = Math.abs(els.pip.offsetLeft - pos.left) < 6 && Math.abs(els.pip.offsetTop - pos.top) < 6;
+    if (!alreadyAtIsland) {
+      state.busy = true;
+      setChoicesDisabled(true);
+      await animatePipTo(island);
+      if (epoch !== runEpoch || !state.running) return;
+    }
+
+    const profile = PipChallenge.checkpoint(PipAdventure.mode, state.phase, state.finaleStage);
+    const previousAnchor = state.anchor;
+
+    // 1. Mark island as landed and cleared so it cannot score again until refreshed
+    island.classList.add("correct", "landed-anchor", "boss-cleared");
+    clearLandedWord(island);
+    island.querySelectorAll("button").forEach(b => b.disabled = true);
+    state.anchor = island;
+
+    // 2. Immediate hit and boss damage
+    state.bossRemaining = Math.max(0, state.bossRemaining - 1);
+    if (state.encounterHealth == null) state.encounterHealth = state.encounterHealthMax || profile.targetHits || 5;
+    state.encounterHealth = Math.max(0, state.encounterHealth - 1);
+    PipBossBattle.hit(state.encounterHealth, state.encounterHealthMax || profile.targetHits || 5);
+    sound.correct();
+    sound.coin();
+    burstAt(island);
+    const reward = awardCorrect();
+    starReward(island, reward.gain);
+    updateHud();
+    toast(state.bossRemaining ? `${state.bossRemaining} right island${state.bossRemaining === 1 ? '' : 's'} left` : (state.encounterHealth > 0 ? "Stage clear!" : "Boss calmed!"));
+
+    // 3. Only after Pip safely lands on another island:
+    // the previously completed island falls and respawns with a new word. Never remove Pip's current platform.
+    if (previousAnchor && previousAnchor !== island && previousAnchor.classList.contains("boss-cleared") && previousAnchor.isConnected) {
+      respawnBossIsland(previousAnchor, true);
+    }
+
+    // 4. Progression check
+    if (state.bossRemaining <= 0) {
+      if (PipAdventure.mode === 'classic' && state.phase === 5 && state.finaleStage < 2) {
+        state.finaleStage++;
+        await moveNewAnchor(island);
+        if (epoch !== runEpoch) return;
+        state.bossMode = false;
+        await sleep(matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 350);
+        await beginCheckpoint();
+      } else {
+        PipBossBattle.defeat();
+        els.game.classList.add('boss-won');
+        updateBeacon(true);
+        await speakBoss(profile, profile.defeat);
+        if (epoch !== runEpoch) return;
+        await completeCheckpoint();
+      }
+    } else {
+      setPrompt(state.targetKind, true);
+      state.busy = false;
+      setChoicesDisabled(false);
+    }
+  }
 
   async function revealRightAnswers(){const right=[...els.choices.querySelectorAll('.island')].filter(node=>node.dataset.bossCorrect==='true');if(!right.length)return;right.forEach(node=>node.classList.add('answer-reveal'));const phrase=right.length===1?'This was the right word.':'These were the right words.';toast(phrase);els.announcer.textContent=phrase;await sleep(matchMedia('(prefers-reduced-motion: reduce)').matches?350:1400);}
   async function wrongChoice(island) { const epoch=runEpoch; state.streak = 0; island.classList.add("wrong"); els.pip.classList.add("panic"); const acceptedKinds = PipVocabulary.kindsFor(island.dataset.word); const uses = acceptedKinds.map(kind => `${article(kind)} ${kind}`).join(" or "); const phrase = `“${island.dataset.word}” can be ${uses}, not ${article(state.targetKind)} ${state.targetKind}.`; toast(phrase, true); els.announcer.textContent = phrase; await sleep(170); for (let i = 1; i <= 3; i++) { if(epoch!==runEpoch)return;island.classList.add(`crack-${i}`); sound.crack(i); await sleep(i === 3 ? 230 : 260); } if(epoch!==runEpoch)return;els.pip.classList.remove("panic"); if (PipSupplies.consumeShield()) { burstAt(island); toast("Cloud shield rescue!"); sound.correct(); await returnPipToAnchor();if(epoch!==runEpoch)return; island.remove(); state.busy = false; setChoicesDisabled(false); return; } sound.boom(); els.pip.classList.add("fall"); const distance = els.game.clientHeight * .72; const fallPip = els.pip.animate([{ transform: "translateY(0)" }, { transform: `translateY(${distance}px)` }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.5,.1,.8,.7)" }); const fallIsland = island.animate([{ transform: "translateY(0) rotate(0)", opacity: 1 }, { transform: `translateY(${distance * .7}px) rotate(-18deg)`, opacity: 0 }], { duration: 660, fill: "forwards", easing: "ease-in" }); await Promise.all([fallPip.finished, fallIsland.finished]).catch(()=>{});if(epoch!==runEpoch)return; if(PipAdventure.mode==='classic')state.hearts -= 1; updateHud(); island.remove(); fallPip.cancel(); fallIsland.cancel(); els.pip.classList.remove("fall"); if (state.hearts <= 0) { state.running = false; await revealRightAnswers();if(epoch!==runEpoch)return;await reviewWords(state.missedWords,{eyebrow:'Words to practise',title:'Let’s learn from that run',lastLabel:'Ready for another go'});if(epoch!==runEpoch)return;showResult(false); } else { await returnPipToAnchor();if(epoch!==runEpoch)return; state.busy = false; setChoicesDisabled(false); } }

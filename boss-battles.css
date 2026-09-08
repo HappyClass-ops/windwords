@@ -1,18 +1,271 @@
-:root{--boss-sky-tint:transparent;--boss-accent:#8ce5bf;--boss-dark:#17362f;--boss-glow:#d9ff98}
-.game-shell.boss-active .sky-tint{background:var(--boss-sky-tint);opacity:.72;transition:background .6s ease,opacity .6s ease}
-.boss-container{position:absolute;z-index:5;left:50%;top:18%;width:clamp(170px,25vw,320px);height:clamp(160px,27vh,290px);translate:-50% -12%;opacity:0;pointer-events:none;transform:scale(.75);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1),filter .25s ease;filter:drop-shadow(0 12px 18px #10233d66)}
-.boss-container.active{opacity:1;transform:scale(1)}.boss-container.boss-entering{animation:boss-arrive .9s both}.boss-container.boss-hit{animation:boss-flinch .42s ease}.boss-container.boss-attacking .boss-sprite{animation:boss-windup .65s ease}.boss-container.boss-defeated{filter:brightness(1.45) saturate(.45);transform:scale(.9);opacity:.62}
-.boss-heading{position:absolute;top:0;left:50%;translate:-50% -45%;width:max-content;max-width:92vw;text-align:center;color:#fff;text-shadow:0 2px 7px #081a32}.boss-heading span{display:block;font:800 clamp(11px,1.4vw,14px)/1.2 Andika,"Century Gothic",sans-serif;letter-spacing:.12em;text-transform:uppercase}.boss-heading strong{display:block;font:900 clamp(18px,2.6vw,30px)/1.05 Andika,"Century Gothic",sans-serif}
-.boss-sprite{position:absolute;inset:4% 10% 20%;transform-origin:50% 72%;animation:boss-hover 2.4s ease-in-out infinite}.boss-core,.boss-face,.boss-crown,.boss-arm{position:absolute;display:block;background:var(--boss-dark);border:clamp(3px,.35vw,5px) solid #eaf7ef;box-shadow:inset 0 0 0 3px #ffffff22,0 0 18px var(--boss-accent)}
-.boss-core{inset:22% 20% 0;border-radius:45% 45% 38% 38%}.boss-face{width:42%;height:32%;left:29%;top:10%;border-radius:48%}.boss-face:before,.boss-face:after{content:"";position:absolute;top:42%;width:13%;aspect-ratio:1;border-radius:50%;background:var(--boss-glow);box-shadow:0 0 10px var(--boss-glow)}.boss-face:before{left:22%}.boss-face:after{right:22%}
-.boss-crown{width:62%;height:24%;left:19%;top:0;clip-path:polygon(0 100%,12% 23%,27% 64%,42% 0,58% 64%,76% 18%,100% 100%);border-radius:40%}.boss-arm{width:24%;height:58%;top:32%;border-radius:52%}.boss-arm.left{left:2%;rotate:18deg}.boss-arm.right{right:2%;rotate:-18deg}.boss-core:after{content:"";position:absolute;left:50%;top:48%;translate:-50% -50%;width:34%;aspect-ratio:1;border-radius:50%;background:conic-gradient(from 20deg,var(--boss-glow),transparent,var(--boss-accent),transparent,var(--boss-glow));box-shadow:0 0 16px var(--boss-glow);animation:boss-core-spin 2s linear infinite}
-.boss-health-bar,.urgency-meter{position:absolute;left:13%;right:13%;height:10px;border-radius:12px;overflow:hidden;background:#13253bcc;border:2px solid #eef8ff}.boss-health-bar{bottom:10%}.urgency-meter{bottom:1%;height:7px}.boss-health-fill,.urgency-fill{display:block;width:100%;height:100%;transform-origin:left center;background:linear-gradient(90deg,var(--boss-accent),var(--boss-glow));transition:transform .22s ease}.urgency-fill{background:linear-gradient(90deg,#69ebcb 0 62%,#ffd05a 80%,#ff6b4c)}.boss-warning .urgency-meter{animation:boss-meter-pulse .55s ease-in-out infinite alternate}.boss-warning .urgency-fill{background:#ff765c}
-.boss-container[data-boss="moss"]{--boss-dark:#31533c;--boss-accent:#82d46d;--boss-glow:#e6ef82}.boss-active.boss-moss{--boss-sky-tint:linear-gradient(#183c2bbb,#31592555)}.boss-moss .boss-crown{filter:hue-rotate(38deg);border-radius:50% 50% 20% 20%}.boss-moss .boss-core:before{content:"";position:absolute;inset:6%;border-radius:45%;background:radial-gradient(circle at 30% 20%,#efff9a 0 4%,transparent 5%),radial-gradient(circle at 72% 62%,#d6ff7d 0 5%,transparent 6%)}
-.boss-container[data-boss="kraken"]{--boss-dark:#31527d;--boss-accent:#7dd8ff;--boss-glow:#f0f5ff}.boss-active.boss-kraken{--boss-sky-tint:linear-gradient(#1c2d64bb,#475c8a77)}.boss-kraken .boss-core{border-radius:50% 50% 35% 35%;background:linear-gradient(#344e78,#182b54)}.boss-kraken .boss-arm{height:67%;width:17%;top:30%;border-radius:50%;background:#294b78}.boss-kraken .boss-core:after{clip-path:polygon(50% 0,70% 37%,57% 37%,75% 100%,30% 51%,45% 51%)}
-.boss-container[data-boss="gale"]{--boss-dark:#526472;--boss-accent:#b4d9e7;--boss-glow:#fff3b0}.boss-active.boss-gale{--boss-sky-tint:linear-gradient(#243d5daa,#c6d7df44)}.boss-gale .boss-core{clip-path:polygon(18% 8%,82% 0,100% 38%,80% 100%,22% 94%,0 42%);border-radius:22%}.boss-gale .boss-core:after{background:repeating-conic-gradient(var(--boss-glow) 0 12deg,var(--boss-dark) 13deg 30deg)}
-.boss-container[data-boss="volcano"]{--boss-dark:#37272a;--boss-accent:#ff6a32;--boss-glow:#ffd05a}.boss-active.boss-volcano{--boss-sky-tint:linear-gradient(#351b3ccc,#ef5a3044)}.boss-volcano .boss-core{clip-path:polygon(16% 0,84% 8%,100% 100%,0 94%);border-radius:26% 26% 18% 18%;background:linear-gradient(135deg,#1e1c24,#4a2521)}.boss-volcano .boss-core:before{content:"";position:absolute;inset:8%;background:linear-gradient(115deg,transparent 22%,#ff7439 23% 27%,transparent 28% 55%,#ffc04f 56% 59%,transparent 60%);filter:drop-shadow(0 0 5px #ff5b29)}
-.boss-hazard{animation:hazard-strike .7s ease both}.island.bramble-bound:after,.island.storm-sunk:after,.island.wind-shrouded:after,.island.lava-melted:after{content:"";position:absolute;inset:22% 5% 0;z-index:7;border-radius:45%;pointer-events:none}.island.bramble-bound:after{background:repeating-linear-gradient(68deg,transparent 0 11px,#315d38 12px 17px,transparent 18px 25px)}.island.storm-sunk{translate:0 18%;filter:saturate(.55)}.island.storm-sunk:after{background:linear-gradient(transparent,#bce6f1bb)}.island.wind-shrouded .word-plaque{filter:blur(4px)}.island.wind-shrouded:after{background:repeating-linear-gradient(12deg,transparent 0 8px,#eaf8ff9c 9px 14px)}.island.lava-melted{filter:hue-rotate(315deg) saturate(1.8);translate:0 12%}.island.lava-melted:after{background:radial-gradient(circle at 25% 75%,#ffe36c 0 5%,transparent 6%),linear-gradient(transparent,#ff4b22cc);box-shadow:0 10px 22px #ff4b22}
-.boss-active.boss-hazard-flash{animation:boss-screen-shake .35s linear}.boss-active.boss-hazard-flash .sky-tint{opacity:.92}
-@keyframes boss-arrive{0%{opacity:0;transform:translateY(-30%) scale(.45)}65%{opacity:1;transform:translateY(5%) scale(1.06)}100%{transform:scale(1)}}@keyframes boss-hover{50%{transform:translateY(-7px) rotate(1deg)}}@keyframes boss-core-spin{to{rotate:1turn}}@keyframes boss-flinch{35%{transform:translateX(10px) scale(.94);filter:brightness(2)}70%{transform:translateX(-6px) scale(1.02)}}@keyframes boss-windup{45%{transform:scale(1.12) translateY(5px)}}@keyframes boss-meter-pulse{to{filter:drop-shadow(0 0 7px #ff4c35)}}@keyframes hazard-strike{40%{transform:translateY(-10px);filter:brightness(1.7)}100%{transform:translateY(0)}}@keyframes boss-screen-shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
-@media(max-width:700px){.boss-container{top:22%;width:clamp(145px,38vw,220px);height:190px}.boss-heading{top:2%}.boss-heading strong{font-size:18px}.boss-health-bar{bottom:13%}.urgency-meter{bottom:6%}}
-@media(prefers-reduced-motion:reduce){.boss-sprite,.boss-container,.boss-warning .urgency-meter,.boss-active.boss-hazard-flash{animation:none!important;transition:none!important}.island.storm-sunk,.island.lava-melted{translate:0 6%}}
+/* Rich visual styles for checkpoint boss encounters */
+.boss-container {
+  position: absolute;
+  top: 1.5%;
+  right: 2.5%;
+  width: min(340px, 38vw);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  font-family: inherit;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.boss-container[hidden] {
+  display: none !important;
+}
+
+.boss-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.boss-name {
+  font-size: clamp(14px, 2.2vw, 22px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.boss-stage {
+  font-size: clamp(10px, 1.3vw, 13px);
+  font-weight: 700;
+  color: #ffe082;
+  opacity: 0.9;
+}
+
+/* Boss Health Bar */
+.boss-health-bar {
+  width: 100%;
+  height: 14px;
+  background: rgba(10, 25, 45, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.boss-health-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff4757, #ff6b81, #ffa502);
+  border-radius: 999px;
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+  box-shadow: 0 0 10px rgba(255, 71, 87, 0.8);
+}
+
+/* Boss Sprite and Visual Representation */
+.boss-sprite {
+  position: relative;
+  width: clamp(100px, 16vw, 180px);
+  height: clamp(100px, 16vw, 180px);
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boss-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.55));
+  transition: transform 0.25s ease, filter 0.25s ease;
+  pointer-events: none;
+}
+
+/* Idle animation */
+.boss-container[data-anim-state="idle"] .boss-img {
+  animation: boss-idle-float 3.2s ease-in-out infinite;
+}
+
+/* Attack windup & strike */
+.boss-container[data-anim-state="attack"] .boss-img,
+.boss-container.boss-attacking .boss-img {
+  animation: boss-attack-lunge 0.75s ease-in-out;
+}
+
+/* Defeat dissolution */
+.boss-container[data-anim-state="defeat"] .boss-img,
+.boss-container.boss-defeated .boss-img {
+  animation: boss-defeat-fade 1.6s ease-out forwards;
+}
+
+/* Hit reaction */
+.boss-container.boss-hit .boss-img {
+  animation: boss-hit-flinch 0.45s ease-out;
+}
+
+@keyframes boss-idle-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.025); }
+}
+
+@keyframes boss-attack-lunge {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.92) translateY(-14px); filter: brightness(1.4) drop-shadow(0 0 20px rgba(255, 100, 50, 0.9)); }
+  60% { transform: scale(1.18) translateY(12px); filter: brightness(1.6) drop-shadow(0 0 25px rgba(255, 50, 50, 1)); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes boss-hit-flinch {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.9) translateX(12px) rotate(4deg); filter: brightness(2.2); }
+  60% { transform: scale(1.04) translateX(-6px); }
+  100% { transform: scale(1); }
+}
+
+@keyframes boss-defeat-fade {
+  0% { transform: scale(1); opacity: 1; filter: brightness(2); }
+  40% { transform: scale(1.1) translateY(-10px); opacity: 0.9; filter: brightness(2.5) hue-rotate(90deg); }
+  100% { transform: scale(0.4) translateY(30px) rotate(15deg); opacity: 0; filter: blur(6px); }
+}
+
+/* Circular Timer Widget */
+.boss-timer-circle {
+  position: absolute;
+  top: 10px;
+  left: -65px;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 28, 50, 0.88);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.timer-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 5;
+}
+
+.timer-ring {
+  fill: none;
+  stroke: #2ed573;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 157.08;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease;
+}
+
+.timer-seconds {
+  position: relative;
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.boss-timer-circle.warning .timer-ring {
+  stroke: #ffa502;
+}
+
+.boss-timer-circle.critical .timer-ring {
+  stroke: #ff4757;
+  animation: timer-ring-pulse 0.4s infinite alternate;
+}
+
+.boss-timer-circle.critical {
+  animation: timer-widget-shake 0.3s infinite alternate;
+}
+
+@keyframes timer-ring-pulse {
+  to { filter: drop-shadow(0 0 8px #ff4757); }
+}
+
+@keyframes timer-widget-shake {
+  0% { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1px, 2px); }
+}
+
+/* Hazard tile takeover overlays */
+/* When hazard strikes, hide base island-art so two islands never stack */
+.island.bramble-bound .island-inner img.island-art,
+.island.storm-sunk .island-inner img.island-art,
+.island.wind-shrouded .island-inner img.island-art,
+.island.lava-melted .island-inner img.island-art {
+  opacity: 0 !important;
+}
+
+.island.bramble-bound:after,
+.island.storm-sunk:after,
+.island.wind-shrouded:after,
+.island.lava-melted:after {
+  content: "";
+  position: absolute;
+  inset: -6% -4% -8%;
+  z-index: 3; /* Behind word plaque (z-index: 10) and buttons (z-index: 12) */
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.3s ease;
+}
+
+.island.bramble-bound:after {
+  background-image: url("assets/bosses/spore-bramble/tile-takeover/frame-01.png");
+  filter: drop-shadow(0 0 10px rgba(98, 212, 109, 0.85));
+}
+.island.storm-sunk:after {
+  background-image: url("assets/bosses/cloud-kraken/tile-takeover/frame-01.png");
+  filter: drop-shadow(0 0 12px rgba(125, 216, 255, 0.85));
+}
+.island.wind-shrouded:after {
+  background-image: url("assets/bosses/gale-golem/tile-takeover/frame-01.png");
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.85));
+}
+.island.lava-melted:after {
+  background-image: url("assets/bosses/void-chronos/tile-takeover/frame-01.png");
+  filter: drop-shadow(0 0 12px rgba(198, 120, 255, 0.85));
+}
+
+/* Ensure word plaques and buttons remain above hazard artwork */
+.island .word-plaque {
+  z-index: 10;
+}
+.island .learn-word,
+.island .speak-word {
+  z-index: 12;
+}
+
+/* Telegraph hazard flash */
+.island.hazard-telegraphed {
+  animation: island-telegraph-wobble 0.4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 14px rgba(255, 50, 50, 0.9)) !important;
+}
+
+@keyframes island-telegraph-wobble {
+  0% { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.06) rotate(3deg); }
+}
+
+/* Hide beacon station during active boss fight until won */
+.at-checkpoint:not(.boss-won) #beaconStation {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

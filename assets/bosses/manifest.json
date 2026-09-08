@@ -1,0 +1,77 @@
+{
+  "version": "2.0",
+  "bosses": {
+    "spore-bramble": {
+      "name": "The Spore Bramble",
+      "theme": "moss",
+      "canvas": [
+        400,
+        360
+      ],
+      "tileCanvas": [
+        320,
+        240
+      ],
+      "categories": [
+        "idle",
+        "attack",
+        "tile-takeover",
+        "defeat"
+      ]
+    },
+    "cloud-kraken": {
+      "name": "The Cloud Kraken",
+      "theme": "kraken",
+      "canvas": [
+        400,
+        360
+      ],
+      "tileCanvas": [
+        320,
+        240
+      ],
+      "categories": [
+        "idle",
+        "attack",
+        "tile-takeover",
+        "defeat"
+      ]
+    },
+    "gale-golem": {
+      "name": "The Gale Golem",
+      "theme": "gale",
+      "canvas": [
+        400,
+        360
+      ],
+      "tileCanvas": [
+        320,
+        240
+      ],
+      "categories": [
+        "idle",
+        "attack",
+        "tile-takeover",
+        "defeat"
+      ]
+    },
+    "void-chronos": {
+      "name": "Void-Eater Chronos",
+      "theme": "volcano",
+      "canvas": [
+        400,
+        360
+      ],
+      "tileCanvas": [
+        320,
+        240
+      ],
+      "categories": [
+        "idle",
+        "attack",
+        "tile-takeover",
+        "defeat"
+      ]
+    }
+  }
+}
