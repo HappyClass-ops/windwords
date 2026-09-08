@@ -30,7 +30,9 @@ window.PipSoundtrack = (() => {
   }
   function schedule(){
     if(!active||!context||context.state!=='running'||!enabled()||document.hidden)return;
-    const a=active,p=themes[a.name],beat=60/p.bpm;
+    const a=active,p=themes[a.name];
+    if(p.track)return; // Dedicated boss MP3 has its own complete arrangement; do not clash with synth notes
+    const beat=60/p.bpm;
     // Look ahead only 150ms; a throttled tab never catches up with a burst of notes.
     if(a.next<context.currentTime-.2)a.next=context.currentTime+.03;
     while(a.next<context.currentTime+.15){
@@ -51,8 +53,8 @@ window.PipSoundtrack = (() => {
   function retire(a){
     if(!a)return;
     a.bus.gain.cancelScheduledValues(context.currentTime);
-    a.bus.gain.setTargetAtTime(0,context.currentTime,.16);
-    setTimeout(()=>{a.audio.pause();a.audio.removeAttribute('src');a.audio.load();a.source.disconnect();a.bus.disconnect();},900);
+    a.bus.gain.setTargetAtTime(0,context.currentTime,.08);
+    setTimeout(()=>{a.audio.pause();a.audio.removeAttribute('src');a.audio.load();a.source.disconnect();a.bus.disconnect();},180);
   }
   function start(){
     if(!unlocked||!enabled()||document.hidden||!context)return;

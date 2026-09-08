@@ -20,7 +20,19 @@
   function el(tag,attrs={},text=''){const e=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));e.textContent=text;return e;}
   function panel(id,title,html){const p=el('section',{id,class:'scene-dialog',role:'dialog','aria-modal':'true','aria-label':title,hidden:''});p.innerHTML=html;$('game').append(p);return p;}
   function inert(){[...$('game').children].forEach(e=>{e.inert=modal?e!==modal:scene==='village'?e!==$('villageHub'):scene==='shop'?e!==$('supplyScene'):false;});}
-  function sceneMusic(){PipSoundtrack.scene(modal===$('journeyMap')?'map':scene==='game'?(mode==='classic'&&api.state.phase===5&&api.state.bossMode?'finale':({2:'sky',3:'forest',4:'crystal',5:'volcano'}[api.state.phase])):scene);}
+  function sceneMusic(){
+    if(modal===$('journeyMap')){PipSoundtrack.scene('map');return;}
+    if(scene==='game'){
+      if(api.state.bossMode){
+        const bm={2:'boss-moss',3:'boss-kraken',4:'boss-gale',5:'boss-volcano'}[api.state.phase]||'boss-volcano';
+        PipSoundtrack.scene(bm);
+        return;
+      }
+      PipSoundtrack.scene({2:'sky',3:'forest',4:'crystal',5:'volcano'}[api.state.phase]||'sky');
+      return;
+    }
+    PipSoundtrack.scene(scene);
+  }
   function open(p){focusBefore=document.activeElement;modal=p;p.hidden=false;api.stopVoice();inert();p.querySelector('button')?.focus();sceneMusic();}
   function close(p){if(p.id==='wardrobePanel')api.wardrobe.close();p.hidden=true;modal=null;inert();focusBefore?.focus({preventScroll:true});api.ground();sceneMusic();}
   function setScene(next){scene=next;walk=null;transition++;for(const id of ['hubPip','shopPip']){$(id).classList.remove('walking','entering','face-left');$(id).dataset.navigation='standing';}if(next==='shop'){positions.shopPip=PipNavigation.point('shop','spawn');place('shopPip');}$('villageHub').hidden=next!=='village';$('supplyScene').hidden=next!=='shop';$('game').classList.toggle('in-village',next!=='game');inert();sceneMusic();}

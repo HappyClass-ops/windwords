@@ -3617,5 +3617,27 @@ window.PipVoiceManifest = {
     "styleVersion": "pip-v1",
     "src": "assets/audio/lines/boss-volcano-defeat.mp3"
   }
+,
+{
+  "text": "Prismatic void wave, strike!",
+  "role": "boss-volcano",
+  "scriptVersion": "story-v2",
+  "styleVersion": "pip-v1",
+  "src": "assets/audio/lines/boss-volcano-attack.mp3"
+},
+{
+  "text": "The void awakens! Can your words seal the rift?",
+  "role": "boss-volcano",
+  "scriptVersion": "story-v2",
+  "styleVersion": "pip-v1",
+  "src": "assets/audio/lines/boss-volcano-awaken.mp3"
+},
+{
+  "text": "Thunder rolls! Choose a naming word!",
+  "role": "boss-kraken",
+  "scriptVersion": "story-v2",
+  "styleVersion": "pip-v1",
+  "src": "assets/audio/lines/boss-kraken-attack.mp3"
+}
 ]
 };
