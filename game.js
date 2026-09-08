@@ -17,7 +17,7 @@
     safely: ["without getting hurt or damaged", "Pip landed safely."], bravely: ["in a brave way", "She climbed bravely."], politely: ["with good manners", "Speak politely."], widely: ["over a large area", "Open it widely."], rudely: ["without good manners", "He spoke rudely."], loudly: ["with a lot of sound", "She shouted loudly."], proudly: ["in a pleased and confident way", "He stood proudly."], neatly: ["in a tidy way", "Write neatly."], sweetly: ["in a kind or pleasant way", "She sang sweetly."], cheaply: ["for little money", "It sold cheaply."], slowly: ["at a low speed", "Walk slowly."], softly: ["in a gentle or quiet way", "The fox crept softly."], swiftly: ["very quickly", "Pip flew swiftly."], gladly: ["in a happy and willing way", "I gladly helped."], boldly: ["in a brave and confident way", "Step boldly."], crisply: ["in a clear, sharp way", "Speak crisply."], brightly: ["with lots of light", "The star shone brightly."], strictly: ["in a firm way", "Follow it strictly."], sadly: ["in an unhappy way", "He sobbed sadly."], badly: ["in a poor way", "The kite flew badly."], dimly: ["with only a little light", "The lamp glowed dimly."], gently: ["in a kind, careful way", "Stroke the kitten gently."], calmly: ["in a quiet, peaceful way", "Wait calmly."], late: ["after the expected time", "Do not arrive late."], today: ["on this day", "We bake today."], away: ["to another place", "Run away!"], out: ["away from inside", "Go out."], round: ["in a circle or to the other side", "Turn round."], home: ["to the place where you live", "Go home."], close: ["to a nearby place", "Come close."], quite: ["to a fairly large degree", "The cave is quite dark."]
   };
 
-  const ids = ["game", "skyScene", "world", "choices", "pip", "lives", "promptCard", "promptKicker", "promptVerb", "targetWord", "promptHelp", "promptAudio", "scoreText", "coinText", "clueText", "shopButton", "soundButton", "dictionaryButton", "trail", "toast", "particles", "pipTalk", "levelBanner", "levelNumber", "levelName", "levelMessage", "wordHelper", "wordHelperClose", "helperWord", "helperKind", "helperDefinition", "helperExample", "fullDictionaryLink", "loadingOverlay", "introOverlay", "storyOverlay", "storyText", "storyNextButton", "storySkipButton", "storyReplayButton", "shopOverlay", "dictionaryOverlay", "resultOverlay", "checkpointReview", "reviewProgress", "reviewCard", "reviewImage", "reviewWord", "reviewKind", "reviewNext", "playButton", "introShopButton", "introDictionaryButton", "closeShopButton", "backToTrailButton", "closeDictionaryButton", "dictionaryPhases", "dictionarySearch", "dictionaryList", "shopCoins", "rewardFill", "rewardMessage", "resultEyebrow", "resultTitle", "resultCopy", "resultScore", "resultBest", "resultCoins", "resultPip", "againButton", "choosePhaseButton", "announcer", "phasePicker", "unlockText", "difficultyPicker", "homeBest", "homeStars", "homeCheckpoints", "bossContainer"];
+  const ids = ["game", "skyScene", "world", "choices", "pip", "lives", "promptCard", "promptKicker", "promptVerb", "targetWord", "promptHelp", "promptAudio", "scoreText", "coinText", "clueText", "shopButton", "soundButton", "dictionaryButton", "trail", "toast", "particles", "pipTalk", "levelBanner", "levelNumber", "levelName", "levelMessage", "wordHelper", "wordHelperClose", "helperWord", "helperKind", "helperDefinition", "helperExample", "fullDictionaryLink", "loadingOverlay", "introOverlay", "storyOverlay", "storyText", "storyNextButton", "storySkipButton", "storyReplayButton", "shopOverlay", "dictionaryOverlay", "resultOverlay", "checkpointReview", "reviewProgress", "reviewCard", "reviewImage", "reviewWord", "reviewKind", "reviewNext", "playButton", "introShopButton", "introDictionaryButton", "closeShopButton", "backToTrailButton", "closeDictionaryButton", "dictionaryPhases", "dictionarySearch", "dictionaryList", "shopCoins", "rewardFill", "rewardMessage", "resultEyebrow", "resultTitle", "resultCopy", "resultScore", "resultBest", "resultCoins", "resultPip", "againButton", "choosePhaseButton", "announcer", "phasePicker", "unlockText", "difficultyPicker", "homeBest", "homeStars", "homeCheckpoints", "bossContainer", "adminOverlay", "closeAdminButton"];
   const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
   const store = {
@@ -263,7 +263,7 @@
     if(PipSupplies.consumeShield()) {
       toast('Cloud shield blocked the boss move!');
     } else {
-      state.hearts -= 1;
+      if (!adminGodMode) state.hearts -= 1;
       updateHud();
       toast(`${profile.attack} Pip has ${state.hearts} heart${state.hearts===1?'':'s'} left.`, true);
       if (state.hearts <= 0) {
@@ -450,7 +450,7 @@
   }
 
   async function revealRightAnswers(){const right=[...els.choices.querySelectorAll('.island')].filter(node=>node.dataset.bossCorrect==='true');if(!right.length)return;right.forEach(node=>node.classList.add('answer-reveal'));const phrase=right.length===1?'This was the right word.':'These were the right words.';toast(phrase);els.announcer.textContent=phrase;await sleep(matchMedia('(prefers-reduced-motion: reduce)').matches?350:1400);}
-  async function wrongChoice(island) { const epoch=runEpoch; state.streak = 0; island.classList.add("wrong"); els.pip.classList.add("panic"); const acceptedKinds = PipVocabulary.kindsFor(island.dataset.word); const uses = acceptedKinds.map(kind => `${article(kind)} ${kind}`).join(" or "); const phrase = `“${island.dataset.word}” can be ${uses}, not ${article(state.targetKind)} ${state.targetKind}.`; toast(phrase, true); els.announcer.textContent = phrase; await sleep(170); for (let i = 1; i <= 3; i++) { if(epoch!==runEpoch)return;island.classList.add(`crack-${i}`); sound.crack(i); await sleep(i === 3 ? 230 : 260); } if(epoch!==runEpoch)return;els.pip.classList.remove("panic"); if (PipSupplies.consumeShield()) { burstAt(island); toast("Cloud shield rescue!"); sound.correct(); await returnPipToAnchor();if(epoch!==runEpoch)return; island.remove(); state.busy = false; setChoicesDisabled(false); return; } sound.boom(); els.pip.classList.add("fall"); const distance = els.game.clientHeight * .72; const fallPip = els.pip.animate([{ transform: "translateY(0)" }, { transform: `translateY(${distance}px)` }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.5,.1,.8,.7)" }); const fallIsland = island.animate([{ transform: "translateY(0) rotate(0)", opacity: 1 }, { transform: `translateY(${distance * .7}px) rotate(-18deg)`, opacity: 0 }], { duration: 660, fill: "forwards", easing: "ease-in" }); await Promise.all([fallPip.finished, fallIsland.finished]).catch(()=>{});if(epoch!==runEpoch)return; if(PipAdventure.mode==='classic')state.hearts -= 1; updateHud(); island.remove(); fallPip.cancel(); fallIsland.cancel(); els.pip.classList.remove("fall"); if (state.hearts <= 0) { state.running = false; await revealRightAnswers();if(epoch!==runEpoch)return;await reviewWords(state.missedWords,{eyebrow:'Words to practise',title:'Let’s learn from that run',lastLabel:'Ready for another go'});if(epoch!==runEpoch)return;showResult(false); } else { await returnPipToAnchor();if(epoch!==runEpoch)return; state.busy = false; setChoicesDisabled(false); } }
+  async function wrongChoice(island) { const epoch=runEpoch; state.streak = 0; island.classList.add("wrong"); els.pip.classList.add("panic"); const acceptedKinds = PipVocabulary.kindsFor(island.dataset.word); const uses = acceptedKinds.map(kind => `${article(kind)} ${kind}`).join(" or "); const phrase = `“${island.dataset.word}” can be ${uses}, not ${article(state.targetKind)} ${state.targetKind}.`; toast(phrase, true); els.announcer.textContent = phrase; await sleep(170); for (let i = 1; i <= 3; i++) { if(epoch!==runEpoch)return;island.classList.add(`crack-${i}`); sound.crack(i); await sleep(i === 3 ? 230 : 260); } if(epoch!==runEpoch)return;els.pip.classList.remove("panic"); if (PipSupplies.consumeShield()) { burstAt(island); toast("Cloud shield rescue!"); sound.correct(); await returnPipToAnchor();if(epoch!==runEpoch)return; island.remove(); state.busy = false; setChoicesDisabled(false); return; } sound.boom(); els.pip.classList.add("fall"); const distance = els.game.clientHeight * .72; const fallPip = els.pip.animate([{ transform: "translateY(0)" }, { transform: `translateY(${distance}px)` }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.5,.1,.8,.7)" }); const fallIsland = island.animate([{ transform: "translateY(0) rotate(0)", opacity: 1 }, { transform: `translateY(${distance * .7}px) rotate(-18deg)`, opacity: 0 }], { duration: 660, fill: "forwards", easing: "ease-in" }); await Promise.all([fallPip.finished, fallIsland.finished]).catch(()=>{});if(epoch!==runEpoch)return; if(PipAdventure.mode==='classic' && !adminGodMode)state.hearts -= 1; updateHud(); island.remove(); fallPip.cancel(); fallIsland.cancel(); els.pip.classList.remove("fall"); if (state.hearts <= 0) { state.running = false; await revealRightAnswers();if(epoch!==runEpoch)return;await reviewWords(state.missedWords,{eyebrow:'Words to practise',title:'Let’s learn from that run',lastLabel:'Ready for another go'});if(epoch!==runEpoch)return;showResult(false); } else { await returnPipToAnchor();if(epoch!==runEpoch)return; state.busy = false; setChoicesDisabled(false); } }
   async function returnPipToAnchor() { const epoch=runEpoch; const end = getPipPosition(state.anchor); const start = { left: els.pip.offsetLeft, top: els.pip.offsetTop }; const dx = end.left - start.left; const dy = end.top - start.top;els.pip.classList.remove('face-left'); const motion = els.pip.animate([{ transform: "translate3d(0,0,0) scale(1)", opacity: 1 }, { transform: `translate3d(${dx * .52}px,${dy * .52 - els.game.clientHeight * .08}px,0) scale(.92)`, opacity: .78, offset: .52 }, { transform: `translate3d(${dx}px,${dy}px,0) scale(1)`, opacity: 1 }], { duration: 520, fill: "forwards", easing: "cubic-bezier(.16,1,.3,1)" }); await motion.finished.catch(()=>{});if(epoch!==runEpoch)return; els.pip.style.left = `${end.left}px`; els.pip.style.top = `${end.top}px`; motion.cancel(); els.pip.classList.add("flash"); burstAt(state.anchor); await sleep(260); els.pip.classList.remove("flash",'face-left'); }
 
   function reviewWords(source,{eyebrow,title,lastLabel}){const words=[...source],total=words.length;if(!total)return Promise.resolve();let index=0,meaningToken=0;const reviewEyebrow=document.getElementById('reviewEyebrow'),reviewTitle=document.getElementById('reviewTitle'),reviewDefinition=document.getElementById('reviewDefinition');return new Promise(resolve=>{const draw=()=>{const item=words[index],entry=PipVocabulary.get(item.phase,item.kind,item.word),token=++meaningToken;reviewEyebrow.textContent=eyebrow;reviewTitle.textContent=title;els.reviewProgress.textContent=`Word ${index+1} of ${total}`;els.reviewWord.textContent=item.word;els.reviewKind.textContent=item.kind;els.reviewImage.src=entry?.image||'';els.reviewImage.alt=`${item.word} — ${item.kind} picture`;reviewDefinition.textContent='Finding the meaning…';PipMeanings.get(item.word,item.kind).then(result=>{if(token===meaningToken)reviewDefinition.textContent=result?.definition||'Look at the picture and say what this word means.';});els.reviewNext.textContent=index===total-1?lastLabel:'Next word';els.reviewCard.classList.remove('review-pop');void els.reviewCard.offsetWidth;els.reviewCard.classList.add('review-pop');speak(item.word);};els.reviewNext.onclick=()=>{if(index<total-1){index++;draw();els.reviewNext.focus({preventScroll:true});return;}hideOverlay(els.checkpointReview);resolve();};draw();showOverlay(els.checkpointReview);els.reviewNext.focus({preventScroll:true});});}
@@ -478,10 +478,180 @@
     Object.entries(PHASES[state.dictionaryPhase].words).forEach(([kind, words]) => {
       if (document.getElementById("dictionaryKind").value && document.getElementById("dictionaryKind").value !== kind) return; const matches = words.filter(word => !query || word.includes(query)); if (!matches.length) return;
       const group = document.createElement("section"); group.className = `dictionary-group ${kind}`; group.innerHTML = `<h3>${labels[kind]} <span>${matches.length}</span></h3><div class="word-chips"></div>`;
-      matches.forEach(word => { const button = document.createElement("button"); button.type = "button"; const progress=practice.get(word,kind);button.textContent = word+" "+"★".repeat(progress.stars)+"☆".repeat(3-progress.stars); button.setAttribute("aria-label", `See and hear ${word}, ${kind}, ${progress.stars} practice stars`); button.addEventListener("click", () => { sound.clue(); showWordHelper(word,kind,state.dictionaryPhase); }); group.querySelector(".word-chips").appendChild(button); }); els.dictionaryList.appendChild(group);
+      matches.forEach(word => { const button = document.createElement("button"); button.type = "button"; const progress=practice.get(word,kind);button.textContent = word+" "+"★".repeat(progress.stars)+"☆".repeat(3-progress.stars); button.setAttribute("aria-label", `See and hear ${word}, ${kind}, ${progress.stars} practice stars`); button.addEventListener("click", () => { if (word.toLowerCase() === "dog") registerDogAdminClick(); sound.clue(); showWordHelper(word,kind,state.dictionaryPhase); }); group.querySelector(".word-chips").appendChild(button); }); els.dictionaryList.appendChild(group);
     });
     if (!els.dictionaryList.children.length) els.dictionaryList.innerHTML = '<p class="dictionary-empty">No matching words.</p>';
   }
+
+  let adminGodMode = false;
+  let dogClickCount = 0;
+  let dogClickTimer = null;
+
+  function registerDogAdminClick() {
+    dogClickCount++;
+    clearTimeout(dogClickTimer);
+    dogClickTimer = setTimeout(() => { dogClickCount = 0; }, 6000);
+    if (dogClickCount >= 10) {
+      dogClickCount = 0;
+      sound.coin();
+      if (els.wordHelper && els.wordHelper.classList.contains("show")) closeWordHelper();
+      if (els.dictionaryOverlay && els.dictionaryOverlay.classList.contains("open")) hideOverlay(els.dictionaryOverlay);
+      toast("🛠️ Secret Admin Panel Unlocked!");
+      openAdminPanel();
+    } else if (dogClickCount >= 5) {
+      toast(`Admin unlock: ${dogClickCount}/10 clicks on “dog”`);
+    }
+  }
+
+  function openAdminPanel() {
+    if (els.wordHelper && els.wordHelper.classList.contains("show")) closeWordHelper();
+    if (els.dictionaryOverlay && els.dictionaryOverlay.classList.contains("open")) hideOverlay(els.dictionaryOverlay);
+    document.querySelectorAll('.scene-dialog').forEach(d => { d.hidden = true; d.classList?.remove('open'); });
+    showOverlay(els.adminOverlay);
+  }
+
+  function closeAdminPanel() {
+    hideOverlay(els.adminOverlay);
+  }
+
+  function initAdminPanel() {
+    els.closeAdminButton?.addEventListener("click", closeAdminPanel);
+    els.adminOverlay?.addEventListener("click", event => { if (event.target === els.adminOverlay) closeAdminPanel(); });
+
+    // Phases 2-5 direct jump
+    [2, 3, 4, 5].forEach(p => {
+      document.getElementById(`adminPhase${p}`)?.addEventListener("click", () => {
+        closeAdminPanel();
+        startGame();
+        state.selectedPhase = p;
+        state.phase = p;
+        applyPhase(p);
+        toast(`Jumped to Phase ${p}`);
+      });
+    });
+
+    // Boss Battles direct jump
+    const bossMap = [
+      { id: 'adminBossBramble', phase: 2, stage: 0, name: 'The Spore Bramble' },
+      { id: 'adminBossKraken', phase: 3, stage: 0, name: 'The Cloud Kraken' },
+      { id: 'adminBossGolem', phase: 4, stage: 0, name: 'The Gale Golem' },
+      { id: 'adminBossChronos1', phase: 5, stage: 0, name: 'Chronos · Stage 1 (Nouns)' },
+      { id: 'adminBossChronos2', phase: 5, stage: 1, name: 'Chronos · Stage 2 (Verbs)' },
+      { id: 'adminBossChronos3', phase: 5, stage: 2, name: 'Chronos · Stage 3 (Adverbs)' }
+    ];
+    bossMap.forEach(b => {
+      document.getElementById(b.id)?.addEventListener("click", async () => {
+        closeAdminPanel();
+        startGame();
+        applyPhase(b.phase);
+        state.finaleStage = b.stage;
+        await beginCheckpoint();
+        toast(`Started ${b.name}`);
+      });
+    });
+
+    // Player State & Cheats
+    document.getElementById("adminAddCoins")?.addEventListener("click", () => {
+      state.coins += 100;
+      PipSupplies.earn(100);
+      store.write("coins", state.coins);
+      updateHud();
+      toast("+100 Stars Added!");
+    });
+
+    document.getElementById("adminMaxHearts")?.addEventListener("click", () => {
+      state.hearts = 3;
+      updateHud();
+      toast("Hearts Restored to 3/3");
+    });
+
+    document.getElementById("adminAddClues")?.addEventListener("click", () => {
+      state.clues += 10;
+      updateHud();
+      toast("+10 Clues Added!");
+    });
+
+    document.getElementById("adminGodMode")?.addEventListener("click", () => {
+      adminGodMode = !adminGodMode;
+      const btn = document.getElementById("adminGodMode");
+      if (btn) btn.textContent = `🛡️ God Mode: ${adminGodMode ? 'ON' : 'OFF'}`;
+      toast(`God Mode ${adminGodMode ? 'Activated' : 'Deactivated'}`);
+    });
+
+    document.getElementById("adminInstaKill")?.addEventListener("click", async () => {
+      if (!state.bossMode) {
+        toast("No active boss encounter");
+        return;
+      }
+      closeAdminPanel();
+      state.bossRemaining = 0;
+      state.encounterHealth = 0;
+      PipBossBattle.defeat();
+      els.game.classList.add('boss-won');
+      updateBeacon(true);
+      const profile = PipChallenge.checkpoint(PipAdventure.mode, state.phase, state.finaleStage);
+      await speakBoss(profile, profile.defeat);
+      await completeCheckpoint();
+      toast("Boss Defeated!");
+    });
+
+    // Progression
+    document.getElementById("adminUnlockAll")?.addEventListener("click", () => {
+      state.unlockedPhase = 5;
+      store.write("unlockedPhase", 5);
+      updatePhasePicker();
+      toast("All 5 phases unlocked!");
+    });
+
+    document.getElementById("adminMasterWords")?.addEventListener("click", () => {
+      let count = 0;
+      const pid = practiceId || ('admin_' + Date.now());
+      [2, 3, 4, 5].forEach(ph => {
+        if (!PHASES[ph]) return;
+        Object.entries(PHASES[ph].words).forEach(([k, words]) => {
+          words.forEach(w => {
+            practice.attempt(pid, w, k, { correct: true, assisted: false, firstTry: true });
+            practice.attempt(pid, w, k, { correct: true, assisted: false, firstTry: true });
+            practice.attempt(pid, w, k, { correct: true, assisted: false, firstTry: true });
+            count++;
+          });
+        });
+      });
+      renderDictionary();
+      toast(`Mastered ${count} words with 3 stars!`);
+    });
+
+    document.getElementById("adminResetSave")?.addEventListener("click", () => {
+      if (confirm("Reset all saved progress and high scores?")) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
+
+    // FX testing
+    document.getElementById("adminAnimIdle")?.addEventListener("click", () => {
+      PipBossBattle.setSpriteState('idle');
+      toast("Sprite set to Idle");
+    });
+    document.getElementById("adminAnimAttack")?.addEventListener("click", () => {
+      PipBossBattle.setSpriteState('attack');
+      toast("Sprite set to Attack");
+    });
+    document.getElementById("adminAnimDefeat")?.addEventListener("click", () => {
+      PipBossBattle.setSpriteState('defeat');
+      toast("Sprite set to Defeat");
+    });
+    document.getElementById("adminTriggerHazard")?.addEventListener("click", () => {
+      if (!state.bossMode) {
+        toast("Enter a boss encounter first");
+        return;
+      }
+      const profile = PipChallenge.checkpoint(PipAdventure.mode, state.phase, state.finaleStage);
+      triggerBossHazard(profile);
+      toast("Hazard triggered!");
+    });
+  }
+
   function openDictionary() { if(state.running){if(state.busy)return;toast('Use an island’s ? for a picture clue. The full word book is in the village.');return;} if (els.dictionaryOverlay.classList.contains("open")) { closeDictionary(); return; } dictionaryReturnOverlay = [els.introOverlay, els.storyOverlay, els.resultOverlay].find(overlay => overlay.classList.contains("open")) || null; if (dictionaryReturnOverlay) hideOverlay(dictionaryReturnOverlay); state.dictionaryPhase = state.running ? state.phase : state.selectedPhase; els.dictionarySearch.value = ""; renderDictionary(); showOverlay(els.dictionaryOverlay); }
   function closeDictionary() { hideOverlay(els.dictionaryOverlay); if (dictionaryReturnOverlay && !state.running) showOverlay(dictionaryReturnOverlay); dictionaryReturnOverlay = null; if(!state.running)PipAdventure.showHub('book'); groundPip(); }
 
@@ -489,10 +659,19 @@
   els.shopButton.addEventListener("click", openShop); els.introShopButton.addEventListener("click", openShop); els.closeShopButton.addEventListener("click", closeShop); els.backToTrailButton.addEventListener("click", closeShop);
   els.dictionaryButton.addEventListener("click", openDictionary); els.introDictionaryButton.addEventListener("click", openDictionary); els.closeDictionaryButton.addEventListener("click", closeDictionary); els.dictionarySearch.addEventListener("input", renderDictionary); els.soundButton.addEventListener("click", () => sound.toggle());
   els.storyNextButton.addEventListener("click", advanceStory); els.storySkipButton.addEventListener("click", startGame); els.storyReplayButton.addEventListener("click", narrateStory); els.wordHelperClose.addEventListener("click", closeWordHelper);
+  els.helperWord?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (els.helperWord.textContent.trim().toLowerCase() === "dog") registerDogAdminClick();
+  });
+  els.helperImage?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (els.helperWord.textContent.trim().toLowerCase() === "dog") registerDogAdminClick();
+  });
+
   els.shopOverlay.addEventListener("click", event => { if (event.target === els.shopOverlay) closeShop(); });
   els.dictionaryOverlay.addEventListener("click", event => { if (event.target === els.dictionaryOverlay) closeDictionary(); });
   els.fullDictionaryLink.addEventListener("click", () => { const word = els.fullDictionaryLink.dataset.word || "word"; navigator.clipboard?.writeText(word).catch(() => {}); toast(`Opening the full dictionary for “${word}”.`); });
-  document.addEventListener("keydown", event => { if (event.key !== "Escape") return; if (els.wordHelper.classList.contains("show")) closeWordHelper(); else if (els.shopOverlay.classList.contains("open")) closeShop(); else if (els.dictionaryOverlay.classList.contains("open")) closeDictionary(); });
+  document.addEventListener("keydown", event => { if (event.key !== "Escape") return; if (els.wordHelper.classList.contains("show")) closeWordHelper(); else if (els.shopOverlay.classList.contains("open")) closeShop(); else if (els.adminOverlay && els.adminOverlay.classList.contains("open")) closeAdminPanel(); else if (els.dictionaryOverlay.classList.contains("open")) closeDictionary(); });
   els.promptAudio.addEventListener("click", () => { sound.ready(); const prompt = state.bossMode ? `Find all the ${pluralKind(state.targetKind)}. ${state.bossRemaining} islands are right.` : `Land on ${article(state.targetKind)} ${state.targetKind}. ${KIND_HELP[state.targetKind]}.`; speak(prompt); });
   document.querySelectorAll(".buy-button").forEach(button => button.addEventListener("click", () => buy(button.dataset.item)));
   document.querySelectorAll(".phase-choice").forEach(button => button.addEventListener("click", () => { const phase = Number(button.dataset.phase); if (phase > state.unlockedPhase) return; state.selectedPhase = phase; store.write("selectedPhase", phase); updatePhasePicker(); applyPhase(phase, true); }));
@@ -514,6 +693,8 @@
   function starReward(island,gain){const node=document.createElement('div');node.className='reward-flight';node.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 3 6 13 15 2-11 11 3 15-13-7-13 7 3-15L3 18l15-2Z"/></svg><b>+'+gain+'</b>';const a=island.getBoundingClientRect(),g=els.game.getBoundingClientRect(),h=els.coinText.getBoundingClientRect();node.style.left=(a.left-g.left+a.width/2)+'px';node.style.top=(a.top-g.top)+'px';els.particles.append(node);const motion=node.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-65px)',opacity:1,offset:.45},{transform:'translate('+(h.left-a.left-a.width/2)+'px,'+(h.top-a.top)+'px) scale(.3)',opacity:0}],{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?150:1100,easing:'ease-in',fill:'forwards'});motion.finished.finally(()=>node.remove());}
   document.getElementById('helperReveal').onclick=()=>{const c=showWordHelper.current;if(!c||state.clues<=0||!state.running)return;const key=c.phase+':'+c.kind+':'+c.word;if(!state.revealed.has(key)){state.clues--;state.revealed.add(key);}const opener=showWordHelper.opener;showWordHelper(c.word,c.kind,c.phase);showWordHelper.opener=opener;updateHud();};
   PipAdventure.attach({wardrobe,practice,openPracticeWord:(word,phase)=>{const entry=PipVocabulary.entries.find(e=>e.word===word&&e.phase===phase)||PipVocabulary.entries.find(e=>e.word===word);if(entry){openDictionary();showWordHelper(word,entry.kind,entry.phase);}},cancelRun:cancelRunMotion,previewSound:()=>{if(state.audioOn){sound.ready();sound.tone(1046,.18,'sine',.05,.1);}},stock:()=>{renderCosmetics();const saved=cosmetics.map(i=>{const b=document.querySelector('[data-cosmetic="'+i.id+'"] button');return {...i,cosmetic:true,owned:ownedCosmetics.includes(i.id),label:b.textContent,disabled:b.disabled};});return state.running?PipSupplies.stock(state):saved;},purchase:id=>{if(!state.running&&cosmetics.some(i=>i.id===id)){const item=cosmetics.find(i=>i.id===id),before=ownedCosmetics.includes(id),locked=state.checkpoints<item.checkpoints;if(locked||(!before&&state.coins<item.stars))return false;document.querySelector('[data-cosmetic="'+id+'"] button')?.click();return true;}return buy(id);},supplies:PipSupplies,state,stopVoice:stopNarration,ground:groundPip,refresh:()=>{updatePhasePicker();updateHud();},beginStory,toggleSound:()=>sound.toggle(),openBook:openDictionary,openShop,hideMenus:()=>{closeWordHelper();for(const overlay of [els.introOverlay,els.storyOverlay,els.resultOverlay,els.dictionaryOverlay,els.shopOverlay])hideOverlay(overlay);}});
+  window.PipAdmin = { open: openAdminPanel, close: closeAdminPanel, registerDogClick: registerDogAdminClick };
+  initAdminPanel();
   buildTrail(); updatePhasePicker(); updateSoundButton(); applyPhase(state.selectedPhase, true); updateHud();
   const assets = ["assets/wind-garden-bg-v2.webp", "assets/wind-island-v2.webp", "assets/journey/beacon-tower.webp", "assets/journey/pip-walk.webp", "assets/journey/ui/go-play-v2.webp", "assets/pip-sprite-atlas-v4.webp", "assets/pip-phase3-rainfinder-atlas-v2.webp", "assets/pip-phase4-windrider-atlas-v2.webp", "assets/pip-phase5-starpilot-atlas-v2.webp"];
   Promise.all(assets.map(src => new Promise(resolve => { const image = new Image(); image.onload = image.onerror = resolve; image.src = src; }))).then(() => { hideOverlay(els.loadingOverlay); PipAdventure.showHub(); });

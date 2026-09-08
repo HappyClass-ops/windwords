@@ -167,6 +167,68 @@
     </section>
     <p class="screen-reader-only" id="announcer" aria-live="assertive"></p>
   </main>
+
+
+    <section class="overlay" id="adminOverlay" aria-labelledby="adminTitle">
+      <div class="modal admin-modal">
+        <button class="close-button" id="closeAdminButton" type="button" aria-label="Close admin panel">×</button>
+        <div class="eyebrow" style="color:#ff6b81;">Developer & Educator Tools</div>
+        <h2 id="adminTitle">🛠️ Admin & Debug Panel</h2>
+        <p class="admin-subtitle">Jump to any encounter, test boss visuals, or toggle developer cheats.</p>
+        
+        <div class="admin-section">
+          <h3>⚡ Jump to Encounter</h3>
+          <div class="admin-grid">
+            <button class="admin-btn" id="adminPhase2" type="button">Phase 2 · Meadow</button>
+            <button class="admin-btn" id="adminPhase3" type="button">Phase 3 · Rainfinder</button>
+            <button class="admin-btn" id="adminPhase4" type="button">Phase 4 · Fortress</button>
+            <button class="admin-btn" id="adminPhase5" type="button">Phase 5 · Chronos</button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3>👾 Jump to Boss Battles Directly</h3>
+          <div class="admin-grid">
+            <button class="admin-btn boss-jump-btn" id="adminBossBramble" type="button">🌿 Spore Bramble</button>
+            <button class="admin-btn boss-jump-btn" id="adminBossKraken" type="button">🐙 Cloud Kraken</button>
+            <button class="admin-btn boss-jump-btn" id="adminBossGolem" type="button">🗿 Gale Golem</button>
+            <button class="admin-btn boss-jump-btn" id="adminBossChronos1" type="button">🌋 Chronos · Stage 1 (Nouns)</button>
+            <button class="admin-btn boss-jump-btn" id="adminBossChronos2" type="button">🌋 Chronos · Stage 2 (Verbs)</button>
+            <button class="admin-btn boss-jump-btn" id="adminBossChronos3" type="button">🌋 Chronos · Stage 3 (Adverbs)</button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3>💰 Player State & Cheats</h3>
+          <div class="admin-grid">
+            <button class="admin-btn cheat-btn" id="adminAddCoins" type="button">+100 Stars</button>
+            <button class="admin-btn cheat-btn" id="adminMaxHearts" type="button">❤️ Restore 3 Hearts</button>
+            <button class="admin-btn cheat-btn" id="adminAddClues" type="button">💡 +10 Clues</button>
+            <button class="admin-btn cheat-btn" id="adminGodMode" type="button">🛡️ God Mode: OFF</button>
+            <button class="admin-btn cheat-btn" id="adminInstaKill" type="button">⚡ Instant Win Boss</button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3>🔓 Unlocks & Progression</h3>
+          <div class="admin-grid">
+            <button class="admin-btn" id="adminUnlockAll" type="button">🌟 Unlock All 5 Phases</button>
+            <button class="admin-btn" id="adminMasterWords" type="button">⭐ 3 Stars on All Words</button>
+            <button class="admin-btn danger-btn" id="adminResetSave" type="button">⚠️ Reset Save Data</button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3>🎭 Boss Sprite & FX Testing</h3>
+          <div class="admin-grid">
+            <button class="admin-btn fx-btn" id="adminAnimIdle" type="button">Pose: Idle</button>
+            <button class="admin-btn fx-btn" id="adminAnimAttack" type="button">Pose: Attack</button>
+            <button class="admin-btn fx-btn" id="adminAnimDefeat" type="button">Pose: Defeat</button>
+            <button class="admin-btn fx-btn" id="adminTriggerHazard" type="button">Trigger Hazard Flash</button>
+          </div>
+        </div>
+      </div>
+    </section>
   <script src="vocabulary.js"></script>
   <script src="selection.js"></script>
   <script src="meanings.js"></script>

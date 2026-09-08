@@ -269,3 +269,132 @@
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+
+/* Admin Panel Styles */
+.admin-modal {
+  width: min(94%, 660px);
+  max-height: 88vh;
+  overflow-y: auto;
+  text-align: left;
+  padding: 24px 28px;
+  background: linear-gradient(160deg, #0d1b2a, #13253e);
+  border: 2px solid rgba(255, 107, 129, 0.7);
+  border-radius: clamp(16px, 2.5vw, 26px);
+  color: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(255, 107, 129, 0.25);
+  transform: translateY(12px) scale(.96);
+  transition: transform .3s cubic-bezier(.2,1.4,.4,1);
+}
+
+.overlay.open .admin-modal {
+  transform: none;
+}
+
+.admin-modal h2 {
+  color: #fff;
+  font-size: clamp(20px, 3vw, 28px);
+  margin-top: 4px;
+}
+
+.admin-subtitle {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 4px 0 16px;
+}
+
+.admin-section {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-section h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #38bdf8;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.admin-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.admin-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #38bdf8;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.admin-btn.boss-jump-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.admin-btn.boss-jump-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.admin-btn.cheat-btn {
+  background: rgba(234, 179, 8, 0.15);
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #fde047;
+}
+
+.admin-btn.cheat-btn:hover {
+  background: rgba(234, 179, 8, 0.35);
+  border-color: #eab308;
+  color: #fff;
+}
+
+.admin-btn.danger-btn {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(220, 38, 38, 0.5);
+  color: #f87171;
+}
+
+.admin-btn.danger-btn:hover {
+  background: rgba(220, 38, 38, 0.45);
+  color: #fff;
+}
+
+.admin-btn.fx-btn {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.35);
+  color: #d8b4fe;
+}
+
+.admin-btn.fx-btn:hover {
+  background: rgba(168, 85, 247, 0.35);
+  border-color: #a855f7;
+  color: #fff;
+}
+
+#adminOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+}
