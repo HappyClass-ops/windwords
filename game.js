@@ -44,7 +44,7 @@
     constructor() {
       this.ctx = null; this.sceneName = ""; this.ducked = false;
       // Legacy recordings stay on disk for safety, but are no longer loaded.
-      this.music = {};
+      this.music = {}; this.bossEffects=new Set();this.bossCues=new Set();
       this.files = {
         jump: "assets/audio/jump-whoosh.mp3", land: "assets/audio/soft-land.mp3",
         correct: "assets/audio/correct-chime.mp3", wrong: "assets/audio/wrong-wind.mp3",
@@ -56,6 +56,8 @@
     ready() { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (!AudioCtx) return; if (!this.ctx) this.ctx = new AudioCtx(); if (this.ctx.state === "suspended") this.ctx.resume(); }
     tone(freq, duration, type = "sine", volume = .12, delay = 0, endFreq = null) { if (!state.audioOn) return; this.ready(); if (!this.ctx) return; const t = this.ctx.currentTime + delay; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, t); if (endFreq) osc.frequency.exponentialRampToValueAtTime(endFreq, t + duration); gain.gain.setValueAtTime(volume * .35, t); gain.gain.exponentialRampToValueAtTime(.001, t + duration); osc.connect(gain).connect(this.ctx.destination); osc.start(t); osc.stop(t + duration); }
     effect(name, volume = .5) { if (!state.audioOn || !this.files[name]) return; const audio = this.makeAudio(this.files[name], volume * .38); audio.play().catch(() => {}); }
+    stopBossEffects(){for(const t of this.bossCues)clearTimeout(t);this.bossCues.clear();for(const a of this.bossEffects){a.pause();a.removeAttribute('src');a.load();}this.bossEffects.clear();}
+    bossStrike(profile,delay){if(!state.audioOn)return;const cue=setTimeout(()=>{this.bossCues.delete(cue);if(!state.audioOn||document.hidden||!state.bossMode)return;const a=this.makeAudio(`assets/audio/boss/boss-${profile.theme}-strike.mp3`,.38);this.bossEffects.add(a);a.onended=a.onerror=()=>this.bossEffects.delete(a);a.play().catch(()=>this.bossEffects.delete(a));},Math.max(0,delay));this.bossCues.add(cue);}
     jump() { this.effect("jump", .34); } land() { this.effect("land", .42); }
     correct() { this.effect("correct", .42); }
     crack(stage) { this.tone(330 - stage * 60, .07 + stage * .025, "sawtooth", .1 + stage * .025, 0, 90); }
@@ -68,13 +70,14 @@
       PipSoundtrack.unlock();
     }
     duck(on) { this.ducked = on; PipSoundtrack.duck(on); }
-    toggle() { state.audioOn = !state.audioOn; store.write("audioOn", state.audioOn); if (state.audioOn) this.ready(); else stopNarration(); PipSoundtrack.refresh(); updateSoundButton(); }
+    toggle() { state.audioOn = !state.audioOn; store.write("audioOn", state.audioOn); if (state.audioOn) this.ready(); else {stopNarration();this.stopBossEffects();} PipSoundtrack.refresh(); updateSoundButton(); }
   }
   const sound = new Sound();
   PipSoundtrack.configure({enabled:()=>state.audioOn});
   PipBossBattle.mount(els.bossContainer);
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  PipVoice.configure({enabled:()=>state.audioOn,duck:on=>sound.duck(on),unavailable:()=>{}});
+  PipVoice.configure({enabled:()=>state.audioOn,duck:on=>{sound.duck(on);if(on)PipBossBattle.hold('speech');else PipBossBattle.release('speech');},unavailable:()=>{}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)sound.stopBossEffects();});
   let voiceRequestToken=0,storyVoiceToken=0;
   const stopNarration=()=>{storyVoiceToken++;PipVoice.stop();};
   const speak=text=>PipVoice.say(text,'teacher');
@@ -295,42 +298,36 @@
   function respawnBossIsland(oldIsland,reason='player'){return bossIslandScheduler.replace(oldIsland,reason);}
 
   async function triggerBossHazard(profile){
-    const epoch = runEpoch;
-    if(!state.running||!state.bossMode||state.busy||els.wordHelper.classList.contains('show'))return;
+    const epoch=runEpoch,battle=PipBossBattle.generation;
+    const valid=()=>epoch===runEpoch&&battle===PipBossBattle.generation&&state.running&&state.bossMode;
+    if(!valid()||state.busy||document.hidden||els.wordHelper.classList.contains('show'))return;
+    const target=bossIslandScheduler.randomTarget();if(!target)return;
     const className={bramble:'bramble-bound',squall:'storm-sunk',whirlwind:'wind-shrouded',lava:'lava-melted'}[profile.hazard];
-    // The scheduler plans the slot and replacement together. Correct answers and
-    // distractors are both eligible; Pip's platform and in-flight target are not.
-    const target=bossIslandScheduler.randomTarget();
-    if(!target)return;
-    
+    state.busy=true;setChoicesDisabled(true);
     target.classList.add('hazard-telegraphed');
-    els.game.classList.remove('boss-hazard-flash');void els.game.offsetWidth;els.game.classList.add('boss-hazard-flash');
-    setTimeout(()=>els.game.classList.remove('boss-hazard-flash'),400);
-    sound.boom();
-    await sleep(350); // Snappy telegraph
-    if(epoch!==runEpoch||target===state.anchor||target.classList.contains('awaiting-pip'))return;
-    target.classList.remove('hazard-telegraphed');
-    target.classList.add('boss-hazard','hazard-spent',className);
-    target.setAttribute('aria-disabled','true');
-    target.setAttribute('tabindex','-1');
-    
-    // Drop and replace the island right away so fresh words keep circulating
-    if(target.isConnected&&target!==state.anchor)await respawnBossIsland(target,'hazard');
-
-    if(profile.learning){
-      toast(profile.hint);PipBossBattle.announce(profile.hint);
-      speakBoss(profile,profile.attack).then(()=>speak(profile.hint));
-      return;
+    sound.bossStrike(profile,profile.windupMs-profile.sfxPeakMs);
+    try{
+      await sleep(profile.windupMs);
+      if(!valid()||document.hidden||!target.isConnected||target===state.anchor)return;
+      PipBossBattle.strike();
+      target.classList.remove('hazard-telegraphed');
+      target.classList.add('boss-hazard','hazard-spent',className);
+      target.setAttribute('aria-disabled','true');target.setAttribute('tabindex','-1');
+      PipBossBattle.announce(profile.theme==='kraken'?'Thunder strike!':profile.attack);
+      await respawnBossIsland(target,'hazard');
+      if(!valid()||document.hidden)return;
+      toast(profile.learning?profile.hint:'An island shifts! Keep going.');
+      // Teaching stays available in text/help; the attack is carried by its actual sound.
+    } finally {
+      target.classList.remove('hazard-telegraphed');
+      if(valid()){state.busy=false;setChoicesDisabled(false);}
     }
-    
-    // User requirement: "(but pip doesnt lose a life ofc)" - timer drops rotate an island without life loss
-    toast(`${profile.attack} An island shifts!`);
-    pipSay('Keep going — you can do it!',1800);speakBoss(profile,profile.attack);
   }
 
   async function beginCheckpoint() {
     const epoch = runEpoch;
     if (state.bossMode || !state.running) return;
+    sound.stopBossEffects();
     bossIslandScheduler.stop();
     state.busy = true;
     state.bossMode = true;
@@ -361,7 +358,7 @@
     PipBossBattle.setHealth(state.encounterHealth, state.encounterHealthMax);
 
     const preview = (profile.stages > 1 ? 'Stage ' + (profile.stage + 1) + ' of ' + profile.stages + ' · ' : '') + profile.label;
-    await announceBanner("BOSS BATTLE", profile.name, preview, 2100);
+    await announceBanner("BOSS BATTLE", profile.name, preview, 900);
     if (!state.running || epoch !== runEpoch) return;
 
     state.targetKind = profile.kind || chooseKind();
@@ -374,23 +371,28 @@
     pipSay(profile.label, 2300);
     await speakBoss(profile,profile.intro);
     if(!state.running||epoch!==runEpoch||!state.bossMode)return;
+    await speak(`Find all the ${pluralKind(state.targetKind)}. ${state.bossRemaining} islands are right.`);
+    if(!state.running||epoch!==runEpoch||!state.bossMode)return;
     await showReadyCue(epoch);
     if(!state.running||epoch!==runEpoch||!state.bossMode)return;
     bossIslandScheduler.start({maxGapMs:2000});
     state.busy = false;
     PipBossBattle.startCountdown();
     updateHud();
-    speak(`Find all the ${pluralKind(state.targetKind)}. ${state.bossRemaining} islands are right.`);
   }
 
-  function applyWardrobe(){for(const node of document.querySelectorAll('#pip .pip-sprite,#hubPip .pip-atlas-frame,#shopPip .pip-atlas-frame'))node.style.backgroundImage=wardrobe.art?'url("'+wardrobe.art+'")':'';}
-  const wardrobe=PipWardrobe.create({storage:localStorage,wallet:{balance:()=>state.coins,spend:cost=>{if(state.coins<cost)return false;state.coins-=cost;store.write('coins',state.coins);updateHud();return true;}},changed:applyWardrobe});
+  function applyWardrobe(){
+    const look=wardrobe.equipped;
+    PipAppearance.render(look,document.querySelectorAll('#pip .pip-sprite,#hubPip .pip-atlas-frame,#shopPip .pip-atlas-frame,#shopMirrorPip,#resultPip'),{pin:true}).catch(()=>{});
+    updateHud();window.dispatchEvent(new Event('wardrobechange'));
+  }
+  const wardrobe=PipWardrobe.create({storage:localStorage,wallet:{balance:()=>state.coins,sync:value=>{state.coins=value;}},changed:applyWardrobe});
   const practice=PipPractice.create({entries:PipVocabulary.entries,storage:localStorage});
   let practiceRound=0,practiceId='',roundWrong=false;const practiceSession=Date.now().toString(36)+Math.random().toString(36).slice(2);
   function beginPractice(options){practiceId=practiceSession+':'+(++practiceRound);roundWrong=false;state.assisted.clear();state.revealed.clear();practice.present(practiceId,state.phase,options,state.targetKind);}
   let runEpoch=0;
   const camera=PipCamera.create(els.world);
-  function cancelRunMotion(){runEpoch++;bossIslandScheduler.stop();PipBossBattle.stop();els.game.classList.remove('boss-active','boss-moss','boss-kraken','boss-gale','boss-volcano','boss-waiting-islands');els.pip.getAnimations().forEach(a=>a.cancel());els.world.getAnimations().forEach(a=>a.cancel());}
+  function cancelRunMotion(){runEpoch++;sound.stopBossEffects();stopNarration();bossIslandScheduler.stop();PipBossBattle.stop();els.game.classList.remove('boss-active','boss-moss','boss-kraken','boss-gale','boss-volcano','boss-waiting-islands');els.pip.getAnimations().forEach(a=>a.cancel());els.world.getAnimations().forEach(a=>a.cancel());}
   function updateBeacon(lit=false){const beacon=document.getElementById('beaconStation');beacon.dataset.lit=String(lit);beacon.style.setProperty('--approach',String(Math.min(1,state.phaseScore/CLIMBS_PER_PHASE)));beacon.setAttribute('aria-label',lit?'Beacon restored':'Beacon ahead: '+state.phaseScore+' of '+CLIMBS_PER_PHASE+' leaps');}
   function getPipPosition(island) { return { left: island.offsetLeft + island.offsetWidth * .5 - els.pip.offsetWidth * .5, top: island.offsetTop + island.offsetHeight * .37 - els.pip.offsetHeight * .9 }; }
   // Islands are responsive; never keep an old pixel landing after a viewport change.
@@ -429,14 +431,15 @@
   function burstAt(island) { const gameRect = els.game.getBoundingClientRect(); const rect = island.getBoundingClientRect(); const x = rect.left - gameRect.left + rect.width / 2; const y = rect.top - gameRect.top + rect.height * .25; const colours = ["#ffcb50", "#ef6f62", "#6ee0c2", "#ffffff", "#3d86d8"]; for (let i = 0; i < 18; i++) { const bit = document.createElement("i"); const angle = Math.random() * Math.PI * 2; const distance = gameRect.width * (.04 + Math.random() * .07); bit.className = "particle"; bit.style.left = `${x}px`; bit.style.top = `${y}px`; bit.style.setProperty("--s", `${3 + Math.random() * gameRect.width * .008}px`); bit.style.setProperty("--c", colours[i % colours.length]); bit.style.setProperty("--x", `${Math.cos(angle) * distance}px`); bit.style.setProperty("--y", `${Math.sin(angle) * distance}px`); els.particles.appendChild(bit); bit.addEventListener("animationend", () => bit.remove()); } }
   function clearLandedWord(island) { const plaque=island.querySelector('.word-plaque');if(!plaque)return;plaque.setAttribute('aria-hidden','true');island.setAttribute('aria-label','Landing island');island.querySelectorAll('button').forEach(button=>button.remove());const motion=plaque.animate([{opacity:1,translate:'0 0'},{opacity:0,translate:'0 -18px'}],{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:320,easing:'ease-out',fill:'forwards'});motion.finished.catch(()=>{}).then(()=>plaque.remove()); }
   async function moveNewAnchor(target) { const epoch=runEpoch,old=state.anchor;const left=target.offsetLeft/els.world.clientWidth*100,top=target.offsetTop/els.world.clientHeight*100;target.style.left=left+'%';target.style.top=top+'%';document.querySelectorAll('.landed-anchor').forEach(node=>{if(node!==target)node.remove();});target.classList.add('landed-anchor');target.removeAttribute('role');target.removeAttribute('tabindex');target.querySelectorAll('button').forEach(b=>b.remove());els.world.insertBefore(target,els.choices);state.anchor=target;if(old!==target)old.remove();els.choices.replaceChildren();groundPip(true);await camera.follow(target);if(epoch!==runEpoch)return;groundPip(true); }
-  function awardCorrect() {
+  async function awardCorrect() {
     state.streak += 1; state.bestStreak = Math.max(state.bestStreak, state.streak); state.totalCorrect += 1;
     const base = 1; const hardBonus = state.includeAdverbs ? 1 : 0; const streakBonus = state.streak % 3 === 0 ? 1 : 0;
-    const gain = (PipAdventure.mode==='learning'?1:base + hardBonus + streakBonus) * PipAdventure.settings(state.phase).multiplier; state.coins += gain; PipSupplies.earn(gain); state.score += 1; state.best = Math.max(state.best, state.score);
-    store.write("coins", state.coins); store.write("best", state.best); store.write("bestStreak", state.bestStreak); store.write("totalCorrect", state.totalCorrect);
-    PipAdventure.record(state.phase,state.score-state.stageStart); return { gain, streakBonus };
+    const gain = (PipAdventure.mode==='learning'?1:base + hardBonus + streakBonus) * PipAdventure.settings(state.phase).multiplier; PipSupplies.earn(gain); state.score += 1; state.best = Math.max(state.best, state.score);
+    await wardrobe.earn(1);
+    store.write("best", state.best); store.write("bestStreak", state.bestStreak); store.write("totalCorrect", state.totalCorrect);
+    PipAdventure.record(state.phase,state.score-state.stageStart); return { gain:PipAdventure.mode==='classic'?gain:1, streakBonus };
   }
-  async function correctChoice(island) { const epoch=runEpoch; island.classList.add("correct"); clearLandedWord(island); const reward = awardCorrect(); starReward(island,reward.gain); state.phaseScore += 1;updateBeacon(); sound.correct(); sound.coin(); burstAt(island); climbSky(); updateHud(); [...els.choices.querySelectorAll(".island")].filter(choice => choice !== island).forEach((choice, index) => { choice.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: `translate(${-135 - index * 22}%, ${42 + index * 13}%)`, opacity: 0 }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.35,.05,.8,.5)" }); }); await sleep(510);if(epoch!==runEpoch||!state.running)return; await moveNewAnchor(island); await sleep(140);if(epoch!==runEpoch||!state.running)return;newRound(); }
+  async function correctChoice(island) { const epoch=runEpoch; island.classList.add("correct"); clearLandedWord(island); const reward = await awardCorrect(); if(epoch!==runEpoch||!state.running)return; starReward(island,reward.gain); state.phaseScore += 1;updateBeacon(); sound.correct(); sound.coin(); burstAt(island); climbSky(); updateHud(); [...els.choices.querySelectorAll(".island")].filter(choice => choice !== island).forEach((choice, index) => { choice.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: `translate(${-135 - index * 22}%, ${42 + index * 13}%)`, opacity: 0 }], { duration: 720, fill: "forwards", easing: "cubic-bezier(.35,.05,.8,.5)" }); }); await sleep(510);if(epoch!==runEpoch||!state.running)return; await moveNewAnchor(island); await sleep(140);if(epoch!==runEpoch||!state.running)return;newRound(); }
   async function bossCorrectChoice(island) {
     const epoch = runEpoch;
     if(!island||island.dataset.bossConsumed==='true'||island.dataset.bossLifecycle!=='active')return;
@@ -467,7 +470,8 @@
     sound.correct();
     sound.coin();
     burstAt(island);
-    const reward = awardCorrect();
+    const reward = await awardCorrect();
+    if(epoch!==runEpoch||!state.running)return;
     starReward(island, reward.gain);
     updateHud();
     toast(state.bossRemaining ? `${state.bossRemaining} right island${state.bossRemaining === 1 ? '' : 's'} left` : (state.encounterHealth > 0 ? "Stage clear!" : "Boss calmed!"));
@@ -493,6 +497,7 @@
         await sleep(matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 350);
         await beginCheckpoint();
       } else {
+        sound.stopBossEffects();
         PipBossBattle.defeat();
         els.game.classList.add('boss-won');
         updateBeacon(true);
@@ -513,7 +518,7 @@
 
   function reviewWords(source,{eyebrow,title,lastLabel}){const words=[...source],total=words.length;if(!total)return Promise.resolve();let index=0,meaningToken=0;const reviewEyebrow=document.getElementById('reviewEyebrow'),reviewTitle=document.getElementById('reviewTitle'),reviewDefinition=document.getElementById('reviewDefinition');return new Promise(resolve=>{const draw=()=>{const item=words[index],entry=PipVocabulary.get(item.phase,item.kind,item.word),token=++meaningToken;reviewEyebrow.textContent=eyebrow;reviewTitle.textContent=title;els.reviewProgress.textContent=`Word ${index+1} of ${total}`;els.reviewWord.textContent=item.word;els.reviewKind.textContent=item.kind;els.reviewImage.src=entry?.image||'';els.reviewImage.alt=`${item.word} — ${item.kind} picture`;reviewDefinition.textContent='Finding the meaning…';PipMeanings.get(item.word,item.kind).then(result=>{if(token===meaningToken)reviewDefinition.textContent=result?.definition||'Look at the picture and say what this word means.';});els.reviewNext.textContent=index===total-1?lastLabel:'Next word';els.reviewCard.classList.remove('review-pop');void els.reviewCard.offsetWidth;els.reviewCard.classList.add('review-pop');speak(item.word);};els.reviewNext.onclick=()=>{if(index<total-1){index++;draw();els.reviewNext.focus({preventScroll:true});return;}hideOverlay(els.checkpointReview);resolve();};draw();showOverlay(els.checkpointReview);els.reviewNext.focus({preventScroll:true});});}
   async function reviewCheckpointWords(){await reviewWords(state.checkpointWords,{eyebrow:'Beacon restored!',title:'Well done, word explorer!',lastLabel:'See my journey'});PipBossBattle.stop();els.game.classList.remove('boss-active','boss-moss','boss-kraken','boss-gale','boss-volcano');}
-  async function completeCheckpoint() { const epoch=runEpoch;updateBeacon(true);state.busy = true; state.coins += 5; PipSupplies.earn(5); store.write("coins",state.coins); state.checkpoints += 1; store.write("checkpoints", state.checkpoints); sound.checkpoint(); updateHomeRecord(); PipAdventure.record(state.phase,state.score-state.stageStart,true); await reviewCheckpointWords();if(!state.running||epoch!==runEpoch)return; if (state.phase >= 5) { state.running = false; await announceBanner("SUMMIT CLEAR", "The islands are safe!", "Every beacon shines. You brought everyone home.", 2500); if(epoch===runEpoch)showResult(true); return; } await PipAdventure.checkpointStop(); if(!state.running||epoch!==runEpoch)return; await PipAdventure.chooseNext(state.phase); if(!state.running||epoch!==runEpoch)return; const nextPhase = state.phase + 1; state.stageStart=state.score; state.unlockedPhase = Math.max(state.unlockedPhase, nextPhase); state.selectedPhase = nextPhase; store.write("unlockedPhase", state.unlockedPhase); store.write("selectedPhase", nextPhase); state.phase = nextPhase; state.phaseScore = 0;state.checkpointWords=[];updateBeacon(); state.bossMode = false; state.previousKind = ""; state.anchor.classList.remove("checkpoint"); els.game.classList.remove("at-checkpoint"); els.choices.innerHTML = ""; resetAnchor(); const pos=getPipPosition(state.anchor); els.pip.style.left=pos.left+"px"; els.pip.style.top=pos.top+"px"; applyPhase(nextPhase); els.promptVerb.textContent = "Ready for"; els.targetWord.textContent = `Phase ${nextPhase}`; els.promptHelp.textContent = phaseDetails().message; buildTrail(); updatePhasePicker(); updateHud(); await announceBanner(`PHASE ${nextPhase} UNLOCKED`, phaseDetails().name, `The beacon shines! On to ${phaseDetails().name}.`, 2500); pipSay(`Welcome to ${phaseDetails().name}.`, 2100); await sleep(320);if(epoch!==runEpoch)return; newRound(); }
+  async function completeCheckpoint() { const epoch=runEpoch,awardKey=practiceSession+':checkpoint:'+epoch+':'+state.phase;if(state.checkpointAwarded===awardKey)return;state.checkpointAwarded=awardKey;updateBeacon(true);state.busy = true; await wardrobe.earn(5,awardKey);if(epoch!==runEpoch)return;PipSupplies.earn(5); state.checkpoints += 1; store.write("checkpoints", state.checkpoints); sound.checkpoint(); updateHomeRecord(); PipAdventure.record(state.phase,state.score-state.stageStart,true); await reviewCheckpointWords();if(!state.running||epoch!==runEpoch)return; if (state.phase >= 5) { state.running = false; await announceBanner("SUMMIT CLEAR", "The islands are safe!", "Every beacon shines. You brought everyone home.", 2500); if(epoch===runEpoch)showResult(true); return; } await PipAdventure.checkpointStop(); if(!state.running||epoch!==runEpoch)return; await PipAdventure.chooseNext(state.phase); if(!state.running||epoch!==runEpoch)return; const nextPhase = state.phase + 1; state.stageStart=state.score; state.unlockedPhase = Math.max(state.unlockedPhase, nextPhase); state.selectedPhase = nextPhase; store.write("unlockedPhase", state.unlockedPhase); store.write("selectedPhase", nextPhase); state.phase = nextPhase; state.phaseScore = 0;state.checkpointWords=[];updateBeacon(); state.bossMode = false; state.previousKind = ""; state.anchor.classList.remove("checkpoint"); els.game.classList.remove("at-checkpoint"); els.choices.innerHTML = ""; resetAnchor(); const pos=getPipPosition(state.anchor); els.pip.style.left=pos.left+"px"; els.pip.style.top=pos.top+"px"; applyPhase(nextPhase); els.promptVerb.textContent = "Ready for"; els.targetWord.textContent = `Phase ${nextPhase}`; els.promptHelp.textContent = phaseDetails().message; buildTrail(); updatePhasePicker(); updateHud(); await announceBanner(`PHASE ${nextPhase} UNLOCKED`, phaseDetails().name, `The beacon shines! On to ${phaseDetails().name}.`, 2500); pipSay(`Welcome to ${phaseDetails().name}.`, 2100); await sleep(320);if(epoch!==runEpoch)return; newRound(); }
   async function handleChoice(island) { const epoch=runEpoch;if (island.classList.contains("boss-cleared") || !state.running || state.busy || island.getAttribute("aria-disabled") === "true") return; sound.ready(); closeWordHelper(); els.pip.classList.remove("engaged", "talking"); els.pipTalk.classList.remove("show"); state.busy = true; setChoicesDisabled(true); await animatePipTo(island);if(epoch!==runEpoch||!state.running)return;const wordPhase=PipAdventure.settings(state.phase).wordPhase,reviewKey=island.dataset.word+':'+island.dataset.kind;if(!state.checkpointWords.some(item=>item.key===reviewKey))state.checkpointWords.push({key:reviewKey,word:island.dataset.word,kind:island.dataset.kind,phase:wordPhase});const accepted=PipVocabulary.accepts(island.dataset.word,state.targetKind),right=state.bossMode?island.dataset.bossCorrect==='true':accepted;if(!right&&!state.missedWords.some(item=>item.key===reviewKey))state.missedWords.push({key:reviewKey,word:island.dataset.word,kind:island.dataset.kind,phase:wordPhase});practice.attempt(practiceId,island.dataset.word,state.targetKind,{correct:right,assisted:state.assisted.has(island.dataset.word+":"+state.targetKind),firstTry:!roundWrong});if(!right)roundWrong=true; if (state.bossMode) { if (right) await bossCorrectChoice(island); else await wrongChoice(island); } else if (accepted) await correctChoice(island); else await wrongChoice(island); groundPip(true); }
 
   function resetAnchor() { camera.reset();document.querySelectorAll(".landed-anchor").forEach(e=>e.remove());let start = document.getElementById("startIsland"); if (!start) { start = document.createElement("div"); start.id = "startIsland"; start.className = "island anchor"; start.setAttribute("aria-hidden", "true"); start.innerHTML = '<div class="island-inner"><img class="island-art" src="assets/wind-island-v2.webp" alt=""></div>'; els.world.insertBefore(start, els.choices); } start.className = "island anchor"; start.removeAttribute("style"); state.anchor = start; els.pip.getAnimations().forEach(a=>a.cancel()); els.pip.classList.remove("fall","panic","flash","airborne","glide","crouch","land",'face-left'); els.pip.removeAttribute("style"); }
@@ -610,9 +615,9 @@
 
     // Player State & Cheats
     document.getElementById("adminAddCoins")?.addEventListener("click", () => {
-      state.coins += 100;
+      wardrobe.earn(100);
       PipSupplies.earn(100);
-      store.write("coins", state.coins);
+
       updateHud();
       toast("+100 Stars Added!");
     });
@@ -740,17 +745,11 @@
   document.getElementById('helperReplay').addEventListener('click',narrateHelp);
   for (const [id,delta] of [['helperPrev',-1],['helperNext',1]]) document.getElementById(id).addEventListener('click',()=>{ const c=showWordHelper.current; if(!c)return; const list=PHASES[c.phase].words[c.kind]; const word=list[(list.indexOf(c.word)+delta+list.length)%list.length]; const opener=showWordHelper.opener; showWordHelper(word,c.kind,c.phase); showWordHelper.opener=opener; });
   els.wordHelper.addEventListener('keydown',event=>{ if(event.key!=='Tab')return; const items=[...els.wordHelper.querySelectorAll('button,a[href]')].filter(e=>!e.hidden&&!e.disabled); const first=items[0],last=items.at(-1); if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus();} else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus();} });
-  const cosmetics=[{id:'aqua',name:'Aqua glow',stars:15,checkpoints:1,detail:'A turquoise glow around Pip.'},{id:'sunset',name:'Sunset glow',stars:30,checkpoints:3,detail:'A warm golden glow around Pip.'},{id:'chime',name:'Crystal chime',stars:25,checkpoints:2,detail:'Plays a cheerful extra sound after a right answer.'}];
-  let ownedCosmetics=store.read('cosmetics',[]); let equippedGlow=store.read('glow',''); let chimeOn=store.read('chime',false);
-  function applyCosmetics(){els.pip.dataset.glow=equippedGlow;}
-  function renderCosmetics(){const grid=document.getElementById('cosmeticGrid'); grid.replaceChildren(); cosmetics.forEach(item=>{const owned=ownedCosmetics.includes(item.id),locked=state.checkpoints<item.checkpoints,equipped=item.id==='chime'?chimeOn:equippedGlow===item.id; const card=document.createElement('article');card.className='shop-item';card.dataset.cosmetic=item.id;const title=document.createElement('h3');title.textContent=item.name;const detail=document.createElement('p');detail.textContent=item.detail; const button=document.createElement('button');button.className='secondary-button';button.textContent=locked?'Unlock: '+item.checkpoints+' checkpoints':owned?(equipped?'Unequip':'Equip'):'Get · '+item.stars+' stars';button.disabled=locked||(!owned&&state.coins<item.stars);button.onclick=()=>{if(state.checkpoints<item.checkpoints)return;if(!ownedCosmetics.includes(item.id)){if(state.coins<item.stars)return;state.coins-=item.stars;ownedCosmetics.push(item.id);store.write('coins',state.coins);store.write('cosmetics',ownedCosmetics);}if(item.id==='chime'){chimeOn=!chimeOn;store.write('chime',chimeOn);}else{equippedGlow=equippedGlow===item.id?'':item.id;store.write('glow',equippedGlow);}applyCosmetics();sound.purchase();updateHud();updateShop();renderCosmetics();};card.append(title,detail,button);grid.append(card);});}
-  const originalCorrect=sound.correct.bind(sound);sound.correct=()=>{originalCorrect();if(chimeOn)sound.tone(1046,.18,'sine',.05,.1);};
-  const shopObserver=new MutationObserver(()=>{if(els.shopOverlay.classList.contains('open'))renderCosmetics();});shopObserver.observe(els.shopOverlay,{attributes:true,attributeFilter:['class']});
-  applyCosmetics();
+  const originalCorrect=sound.correct.bind(sound);sound.correct=()=>{originalCorrect();if(wardrobe.equipped.chime==='chime')sound.tone(1046,.18,'sine',.05,.1);};
 
   function starReward(island,gain){const node=document.createElement('div');node.className='reward-flight';node.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 3 6 13 15 2-11 11 3 15-13-7-13 7 3-15L3 18l15-2Z"/></svg><b>+'+gain+'</b>';const a=island.getBoundingClientRect(),g=els.game.getBoundingClientRect(),h=els.coinText.getBoundingClientRect();node.style.left=(a.left-g.left+a.width/2)+'px';node.style.top=(a.top-g.top)+'px';els.particles.append(node);const motion=node.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-65px)',opacity:1,offset:.45},{transform:'translate('+(h.left-a.left-a.width/2)+'px,'+(h.top-a.top)+'px) scale(.3)',opacity:0}],{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?150:1100,easing:'ease-in',fill:'forwards'});motion.finished.finally(()=>node.remove());}
   document.getElementById('helperReveal').onclick=()=>{const c=showWordHelper.current;if(!c||state.clues<=0||!state.running)return;const key=c.phase+':'+c.kind+':'+c.word;if(!state.revealed.has(key)){state.clues--;state.revealed.add(key);}const opener=showWordHelper.opener;showWordHelper(c.word,c.kind,c.phase);showWordHelper.opener=opener;updateHud();};
-  PipAdventure.attach({wardrobe,practice,openPracticeWord:(word,phase)=>{const entry=PipVocabulary.entries.find(e=>e.word===word&&e.phase===phase)||PipVocabulary.entries.find(e=>e.word===word);if(entry){openDictionary();showWordHelper(word,entry.kind,entry.phase);}},cancelRun:cancelRunMotion,previewSound:()=>{if(state.audioOn){sound.ready();sound.tone(1046,.18,'sine',.05,.1);}},stock:()=>{renderCosmetics();const saved=cosmetics.map(i=>{const b=document.querySelector('[data-cosmetic="'+i.id+'"] button');return {...i,cosmetic:true,owned:ownedCosmetics.includes(i.id),label:b.textContent,disabled:b.disabled};});return state.running?PipSupplies.stock(state):saved;},purchase:id=>{if(!state.running&&cosmetics.some(i=>i.id===id)){const item=cosmetics.find(i=>i.id===id),before=ownedCosmetics.includes(id),locked=state.checkpoints<item.checkpoints;if(locked||(!before&&state.coins<item.stars))return false;document.querySelector('[data-cosmetic="'+id+'"] button')?.click();return true;}return buy(id);},supplies:PipSupplies,state,stopVoice:stopNarration,ground:groundPip,refresh:()=>{updatePhasePicker();updateHud();},beginStory,toggleSound:()=>sound.toggle(),openBook:openDictionary,openShop,hideMenus:()=>{closeWordHelper();for(const overlay of [els.introOverlay,els.storyOverlay,els.resultOverlay,els.dictionaryOverlay,els.shopOverlay])hideOverlay(overlay);}});
+  PipAdventure.attach({wardrobe,practice,openPracticeWord:(word,phase)=>{const entry=PipVocabulary.entries.find(e=>e.word===word&&e.phase===phase)||PipVocabulary.entries.find(e=>e.word===word);if(entry){openDictionary();showWordHelper(word,entry.kind,entry.phase);}},cancelRun:cancelRunMotion,previewSound:()=>{if(state.audioOn){sound.ready();sound.tone(1046,.18,'sine',.05,.1);}},stock:()=>PipSupplies.stock(state),purchase:id=>buy(id),supplies:PipSupplies,state,stopVoice:stopNarration,ground:groundPip,refresh:()=>{updatePhasePicker();updateHud();},beginStory,toggleSound:()=>sound.toggle(),openBook:openDictionary,openShop,hideMenus:()=>{closeWordHelper();for(const overlay of [els.introOverlay,els.storyOverlay,els.resultOverlay,els.dictionaryOverlay,els.shopOverlay])hideOverlay(overlay);}});
   window.PipAdmin = { open: openAdminPanel, close: closeAdminPanel, registerDogClick: registerDogAdminClick };
   initAdminPanel();
   buildTrail(); updatePhasePicker(); updateSoundButton(); applyPhase(state.selectedPhase, true); updateHud();

@@ -10,7 +10,7 @@ window.PipVoice = (() => {
     let failed=false,audio;
     const fallback=()=>{if(failed||id!==token)return;failed=true;if(audio){audio.pause();if(active===audio)active=null;}if(!enabled()){finish('disabled');return;}unavailable();finish('unavailable');};
     if(!bundle){fallback();return;}
-    try{if(id!==token)return;if(!enabled()){finish('disabled');return;}audio=new Audio(bundle.src);audio.volume=role==='pip'?.49:.44;if(role==='pip'&&!bundle.nativeDelivery){audio.preservesPitch=false;audio.webkitPreservesPitch=false;audio.playbackRate=1.45;}active=audio;audio.onended=()=>{if(id===token&&!failed){active=null;finish('ended');}};audio.onerror=fallback;await audio.play();}catch{fallback();}
+    try{if(id!==token)return;if(!enabled()){finish('disabled');return;}audio=new Audio(bundle.src);audio.volume=role.startsWith('boss-')?.56:role==='pip'?.49:.44;if(role==='pip'&&!bundle.nativeDelivery){audio.preservesPitch=false;audio.webkitPreservesPitch=false;audio.playbackRate=1.45;}active=audio;audio.onended=()=>{if(id===token&&!failed){active=null;finish('ended');}};audio.onerror=fallback;await audio.play();}catch{fallback();}
   }
   function say(text,role='teacher'){
     stop();if(!enabled())return Promise.resolve('disabled');
@@ -21,5 +21,6 @@ window.PipVoice = (() => {
     timer=setTimeout(()=>{duck(true);playback(clean,role,id);},180);
     return completion;
   }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
   return{configure(options){duck=options.duck;enabled=options.enabled;unavailable=options.unavailable||unavailable;},say,stop};
 })();

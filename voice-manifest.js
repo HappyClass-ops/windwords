@@ -3296,7 +3296,7 @@ window.PipVoiceManifest = {
     "src": "assets/audio/lines/story-page-2.mp3"
   },
   {
-    "text": "After six leaps, help me light a beacon. Then choose which path we will take next. Let’s fly!",
+    "text": "After six leaps, help me light a beacon. Then choose which path we will take next. Let\u2019s fly!",
     "role": "pip",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
@@ -3317,21 +3317,21 @@ window.PipVoiceManifest = {
     "src": "assets/audio/lines/banner-checkpoint-final.mp3"
   },
   {
-    "text": "CHECKPOINT. Storm 1 of 3 · Identify the naming words. More than one island is right.",
+    "text": "CHECKPOINT. Storm 1 of 3 \u00b7 Identify the naming words. More than one island is right.",
     "role": "pip",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
     "src": "assets/audio/lines/banner-storm-1.mp3"
   },
   {
-    "text": "CHECKPOINT. Storm 2 of 3 · Find the action words. More than one island is right.",
+    "text": "CHECKPOINT. Storm 2 of 3 \u00b7 Find the action words. More than one island is right.",
     "role": "pip",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
     "src": "assets/audio/lines/banner-storm-2.mp3"
   },
   {
-    "text": "CHECKPOINT. Storm 3 of 3 · Clear the last wordwind. More than one island is right.",
+    "text": "CHECKPOINT. Storm 3 of 3 \u00b7 Clear the last wordwind. More than one island is right.",
     "role": "pip",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
@@ -3538,106 +3538,96 @@ window.PipVoiceManifest = {
     "role": "boss-moss",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-moss-awaken.mp3"
+    "src": "assets/audio/boss/boss-moss-awaken-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "My brambles are growing!",
     "role": "boss-moss",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-moss-attack.mp3"
+    "src": "assets/audio/boss/boss-moss-attack-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "Ah... my vines rest...",
     "role": "boss-moss",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-moss-defeat.mp3"
+    "src": "assets/audio/boss/boss-moss-defeat-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "The rain will wash your words away!",
     "role": "boss-kraken",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-kraken-awaken.mp3"
+    "src": "assets/audio/boss/boss-kraken-awaken-v2.mp3",
+    "nativeDelivery": true
   },
   {
-    "text": "Thunder rolls. Choose a naming word!",
+    "text": "Storm surge!",
     "role": "boss-kraken",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-kraken-attack.mp3"
+    "src": "assets/audio/boss/boss-kraken-attack-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "The storm is clearing...",
     "role": "boss-kraken",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-kraken-defeat.mp3"
+    "src": "assets/audio/boss/boss-kraken-defeat-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "Feel the rush of the cliff-winds!",
     "role": "boss-gale",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-gale-awaken.mp3"
+    "src": "assets/audio/boss/boss-gale-awaken-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "Whirlwind charge!",
     "role": "boss-gale",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-gale-attack.mp3"
+    "src": "assets/audio/boss/boss-gale-attack-v2.mp3",
+    "nativeDelivery": true
   },
   {
     "text": "The wild wind is a calm breeze now.",
     "role": "boss-gale",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-gale-defeat.mp3"
+    "src": "assets/audio/boss/boss-gale-defeat-v2.mp3",
+    "nativeDelivery": true
   },
   {
-    "text": "The volcano awakens! Can your words quench my fire?",
+    "text": "The void awakens! Can your words seal the rift?",
     "role": "boss-volcano",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-volcano-awaken.mp3"
+    "src": "assets/audio/boss/boss-volcano-awaken-v2.mp3",
+    "nativeDelivery": true
   },
   {
-    "text": "Molten fire, fall!",
+    "text": "Prismatic void wave, strike!",
     "role": "boss-volcano",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-volcano-attack.mp3"
+    "src": "assets/audio/boss/boss-volcano-attack-v2.mp3",
+    "nativeDelivery": true
   },
   {
-    "text": "The beacons... they shine... the fire is calm at last!",
+    "text": "The rift is sealed. Your words have restored the light!",
     "role": "boss-volcano",
     "scriptVersion": "story-v2",
     "styleVersion": "pip-v1",
-    "src": "assets/audio/lines/boss-volcano-defeat.mp3"
+    "src": "assets/audio/boss/boss-volcano-defeat-v2.mp3",
+    "nativeDelivery": true
   }
-,
-{
-  "text": "Prismatic void wave, strike!",
-  "role": "boss-volcano",
-  "scriptVersion": "story-v2",
-  "styleVersion": "pip-v1",
-  "src": "assets/audio/lines/boss-volcano-attack.mp3"
-},
-{
-  "text": "The void awakens! Can your words seal the rift?",
-  "role": "boss-volcano",
-  "scriptVersion": "story-v2",
-  "styleVersion": "pip-v1",
-  "src": "assets/audio/lines/boss-volcano-awaken.mp3"
-},
-{
-  "text": "Thunder rolls! Choose a naming word!",
-  "role": "boss-kraken",
-  "scriptVersion": "story-v2",
-  "styleVersion": "pip-v1",
-  "src": "assets/audio/lines/boss-kraken-attack.mp3"
-}
 ]
 };

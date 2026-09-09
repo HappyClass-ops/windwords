@@ -18,8 +18,12 @@ window.PipSoundtrack = (() => {
   };
   let context,active,timer,current='village',enabled=()=>true,ducked=false,unlocked=false;
   const hz = midi => 440*Math.pow(2,(midi-69)/12);
-  function level(){return enabled()&&!document.hidden?(ducked?.24:1):0;}
-  function volume(){if(active&&context)active.bus.gain.setTargetAtTime(level()*.22,context.currentTime,.18);}
+  function level(){return enabled()&&!document.hidden?(ducked?.32:1):0;}
+  function fadeMedia(a,target,duration=240){
+    clearInterval(a.fade);const from=a.audio.volume,started=performance.now();
+    a.fade=setInterval(()=>{const t=Math.min(1,(performance.now()-started)/duration);a.audio.volume=Math.max(0,Math.min(1,from+(target-from)*t));if(t===1){clearInterval(a.fade);a.fade=null;}},30);
+  }
+  function volume(){if(!active)return;const target=level();fadeMedia(active,target*(themes[active.name].track?.30:.10));if(context&&active.bus)active.bus.gain.setTargetAtTime(target*.22,context.currentTime,.18);}
   function note(midi,t,duration,amp,type,bus){
     const oscillator=context.createOscillator(),gain=context.createGain();
     oscillator.type=type;oscillator.frequency.value=hz(midi);
@@ -31,7 +35,7 @@ window.PipSoundtrack = (() => {
   function schedule(){
     if(!active||!context||context.state!=='running'||!enabled()||document.hidden)return;
     const a=active,p=themes[a.name];
-    if(p.track)return; // Dedicated boss MP3 has its own complete arrangement; do not clash with synth notes
+    if(p.track&&!a.failed)return; // Synth is a quiet fallback only if a local track fails.
     const beat=60/p.bpm;
     // Look ahead only 150ms; a throttled tab never catches up with a burst of notes.
     if(a.next<context.currentTime-.2)a.next=context.currentTime+.03;
@@ -51,37 +55,47 @@ window.PipSoundtrack = (() => {
     }
   }
   function retire(a){
-    if(!a)return;
-    a.bus.gain.cancelScheduledValues(context.currentTime);
-    a.bus.gain.setTargetAtTime(0,context.currentTime,.08);
-    setTimeout(()=>{a.audio.pause();a.audio.removeAttribute('src');a.audio.load();a.source.disconnect();a.bus.disconnect();},180);
+    if(!a)return;fadeMedia(a,0,170);if(context&&a.bus){a.bus.gain.cancelScheduledValues(context.currentTime);a.bus.gain.setTargetAtTime(0,context.currentTime,.06);}
+    setTimeout(()=>{clearInterval(a.fade);a.audio.pause();a.audio.removeAttribute('src');a.audio.load();a.bus?.disconnect();},190);
+  }
+  function play(a){
+    if(a!==active||!enabled()||document.hidden||a.pending)return;
+    if(!a.audio.paused&&!a.failed)return;
+    a.pending=true;
+    Promise.resolve(a.audio.play()).then(()=>{
+      if(a!==active||!enabled()||document.hidden){a.audio.pause();return;}
+      a.failed=false;a.error='';volume();
+    }).catch(error=>{if(a===active){a.error=error.name;a.failed=error.name!=='NotAllowedError';}})
+      .finally(()=>{a.pending=false;});
   }
   function start(){
-    if(!unlocked||!enabled()||document.hidden||!context)return;
-    if(active?.name===current){volume();active.audio.play().catch(()=>{});return;}
+    if(!unlocked||!enabled()||document.hidden)return;
+    if(active?.name===current){volume();play(active);if(!timer)timer=setInterval(schedule,50);return;}
     retire(active);
-    const bus=context.createGain();bus.gain.value=0;bus.connect(context.destination);
+    const bus=context?.createGain();if(bus){bus.gain.value=0;bus.connect(context.destination);}
     const audio=new Audio(themes[current].track||`assets/audio/zones/${themes[current].ambience}-ambience.mp3`);
-    audio.loop=true;audio.preload='none';audio.volume=.48;
-    const source=context.createMediaElementSource(audio);source.connect(bus);
-    active={name:current,bus,audio,source,next:context.currentTime+.03,step:0};
-    audio.play().catch(()=>{});volume();schedule();
+    audio.loop=true;audio.preload='auto';audio.volume=0;
+    // Do not route HTML media through createMediaElementSource: file/CORS origins can become silent.
+    const a=active={name:current,bus,audio,next:(context?.currentTime||0)+.03,step:0,failed:false,pending:false,error:''};
+    audio.onerror=()=>{if(a===active){a.failed=true;a.error='MediaError';}};
+    audio.oncanplay=()=>{if(a===active)play(a);};
+    play(a);volume();schedule();
     if(!timer)timer=setInterval(schedule,50);
   }
   function unlock(){
     if(!enabled())return;
-    const AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;
-    context ||= new AudioContext();unlocked=true;
-    context.resume().then(start).catch(()=>{});
+    unlocked=true;const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(AudioContext){try{context ||= new AudioContext();context.resume().catch(()=>{});}catch{}}
+    start();
   }
   function scene(name){current=themes[name]?name:'sky';start();}
   function refresh(){
     volume();
     if(!enabled()||document.hidden){active?.audio.pause();if(timer){clearInterval(timer);timer=null;}}
-    else {unlock();if(active){active.next=context.currentTime+.03;if(!timer)timer=setInterval(schedule,50);}}
+    else {unlock();if(active){active.next=(context?.currentTime||0)+.03;if(!timer)timer=setInterval(schedule,50);}}
   }
   document.addEventListener('pointerdown',unlock,{passive:true});
   document.addEventListener('keydown',unlock);
   document.addEventListener('visibilitychange',refresh);
-  return {configure(options){enabled=options.enabled||enabled;},scene,unlock,refresh,duck(on){ducked=on;volume();},get current(){return current==='boss-volcano'?'finale':current;},get battle(){return current.startsWith('boss-')?current:'';}};
+  return {configure(options){enabled=options.enabled||enabled;},scene,unlock,refresh,duck(on){ducked=on;volume();},get status(){return {scene:current,context:context?.state,paused:active?.audio.paused,ducked,error:active?.error||''};},get current(){return current==='boss-volcano'?'finale':current;},get battle(){return current.startsWith('boss-')?current:'';}};
 })();

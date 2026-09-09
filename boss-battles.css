@@ -1,4 +1,15 @@
 /* Rich visual styles for checkpoint boss encounters */
+.game-shell{--boss-rim:127,225,255;--boss-shadow:18,37,91;--boss-width:clamp(440px,58vw,740px)}
+.game-shell.boss-moss{--boss-rim:165,232,96;--boss-shadow:12,59,28;--boss-width:clamp(430px,57vw,750px)}
+.game-shell.boss-kraken{--boss-rim:99,221,255;--boss-shadow:19,30,84;--boss-width:clamp(500px,68vw,900px)}
+.game-shell.boss-gale{--boss-rim:180,237,247;--boss-shadow:37,53,76;--boss-width:clamp(450px,61vw,810px)}
+.game-shell.boss-volcano{--boss-rim:182,129,255;--boss-shadow:40,13,67;--boss-width:clamp(450px,60vw,800px)}
+.boss-atmosphere{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 48% 43%,transparent 22%,rgba(var(--boss-shadow),.16) 60%,rgba(var(--boss-shadow),.55) 100%),linear-gradient(rgba(var(--boss-shadow),.18),rgba(var(--boss-shadow),.1));transition:opacity .65s ease}
+.boss-active:not(.boss-won):not(.in-village) .boss-atmosphere{opacity:1}
+.boss-sprite::before{content:'';position:absolute;inset:2% -8%;border-radius:50%;background:radial-gradient(ellipse,rgba(var(--boss-rim),.26),rgba(var(--boss-rim),.06) 48%,transparent 68%);box-shadow:inset 0 0 35px rgba(var(--boss-rim),.12);animation:boss-aura-breathe 5s ease-in-out infinite;pointer-events:none}
+.boss-kraken .boss-sprite::before{background:radial-gradient(ellipse,rgba(96,215,255,.30),rgba(50,85,175,.14) 43%,transparent 68%)}
+.boss-gale .boss-sprite::after,.boss-volcano .boss-sprite::after{content:'';position:absolute;inset:15% 3%;border:2px solid rgba(var(--boss-rim),.22);border-left-color:transparent;border-right-color:transparent;border-radius:50%;transform:rotate(-24deg);pointer-events:none}
+@keyframes boss-aura-breathe{50%{opacity:.6;scale:1.05}}
 .boss-container {
   position: absolute;
   inset: 0;
@@ -102,12 +113,12 @@
 /* Boss Arena Enemy (Centred behind islands - enlarged for commanding presence) */
 .boss-sprite {
   position: absolute;
-  left: 50%;
-  top: 31%;
-  transform: translate(-50%, -22%);
-  width: clamp(320px, 42vw, 540px);
-  height: clamp(320px, 42vw, 540px);
-  z-index: 6;
+  left: 47%;
+  top: 17%;
+  transform: translateX(-50%);
+  width: min(var(--boss-width), 91%);
+  height: 76%;
+  z-index: 9;
   pointer-events: none;
   display: flex;
   justify-content: center;
@@ -115,10 +126,12 @@
 }
 
 .boss-img {
+  position:relative;
+  z-index:1;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.65));
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px rgba(var(--boss-rim),.30));
   transition: transform 0.25s ease, filter 0.25s ease;
   pointer-events: none;
 }
@@ -369,8 +382,11 @@
 
 /* Telegraph hazard flash */
 .island.hazard-telegraphed {
-  animation: island-telegraph-wobble 0.4s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 14px rgba(255, 50, 50, 0.9)) !important;
+  animation: none;
+  outline:3px solid rgba(var(--boss-rim),.9);
+  outline-offset:8px;
+  border-radius:25%;
+  filter: drop-shadow(0 0 12px rgba(var(--boss-rim),.65)) !important;
 }
 
 @keyframes island-telegraph-wobble {

@@ -1,0 +1,290 @@
+{
+  "effects": [
+    {
+      "boss": "moss",
+      "source": "dragon-studio-heavy-whoosh-06-414584.mp3",
+      "sourceSeconds": 3.024,
+      "trimStart": 0.159,
+      "duration": 1.15,
+      "impactOffsetMs": 300,
+      "runtime": "boss-moss-strike.mp3",
+      "fadeOut": 0.22,
+      "loudnessTarget": -19
+    },
+    {
+      "boss": "kraken",
+      "source": "data_pion-sfx7-thunder-strike-324524.mp3",
+      "sourceSeconds": 4.032,
+      "trimStart": 0.179,
+      "duration": 2.35,
+      "impactOffsetMs": 100,
+      "runtime": "boss-kraken-strike.mp3",
+      "fadeOut": 0.22,
+      "loudnessTarget": -19
+    },
+    {
+      "boss": "gale",
+      "source": "dragon-studio-air-spell-425463.mp3",
+      "sourceSeconds": 8.04,
+      "trimStart": 1.526,
+      "duration": 1.7,
+      "impactOffsetMs": 450,
+      "runtime": "boss-gale-strike.mp3",
+      "fadeOut": 0.22,
+      "loudnessTarget": -19
+    },
+    {
+      "boss": "volcano",
+      "source": "data_pion-sfx28-attack-338386.mp3",
+      "sourceSeconds": 4.032,
+      "trimStart": 0.309,
+      "duration": 1.7,
+      "impactOffsetMs": 150,
+      "runtime": "boss-volcano-strike.mp3",
+      "fadeOut": 0.22,
+      "loudnessTarget": -19
+    }
+  ],
+  "voices": [
+    {
+      "file": "boss-moss-awaken-v2.mp3",
+      "text": "Who disturbs my moss?",
+      "role": "boss-moss",
+      "voice": "Callum",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.52,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.84,
+        "use_speaker_boost": true
+      },
+      "bytes": 30137,
+      "characterCost": "21",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.93,aresample=44100,atempo=1.075268817204301,highpass=f=70,aecho=0.8:0.9:28:0.055,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-moss-awaken-v2.mp3"
+    },
+    {
+      "file": "boss-moss-attack-v2.mp3",
+      "text": "My brambles are growing!",
+      "role": "boss-moss",
+      "voice": "Callum",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.52,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.84,
+        "use_speaker_boost": true
+      },
+      "bytes": 31391,
+      "characterCost": "24",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.93,aresample=44100,atempo=1.075268817204301,highpass=f=70,aecho=0.8:0.9:28:0.055,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-moss-attack-v2.mp3"
+    },
+    {
+      "file": "boss-moss-defeat-v2.mp3",
+      "text": "Ah... my vines rest...",
+      "role": "boss-moss",
+      "voice": "Callum",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.52,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.84,
+        "use_speaker_boost": true
+      },
+      "bytes": 35988,
+      "characterCost": "22",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.93,aresample=44100,atempo=1.075268817204301,highpass=f=70,aecho=0.8:0.9:28:0.055,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-moss-defeat-v2.mp3"
+    },
+    {
+      "file": "boss-kraken-awaken-v2.mp3",
+      "text": "The rain will wash your words away!",
+      "role": "boss-kraken",
+      "voice": "Brian",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.48,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.86,
+        "use_speaker_boost": true
+      },
+      "bytes": 43511,
+      "characterCost": "35",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.87,aresample=44100,atempo=1.1494252873563218,highpass=f=70,aecho=0.8:0.9:65|110:0.08|0.04,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-kraken-awaken-v2.mp3"
+    },
+    {
+      "file": "boss-kraken-attack-v2.mp3",
+      "text": "Storm surge!",
+      "role": "boss-kraken",
+      "voice": "Brian",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.48,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.86,
+        "use_speaker_boost": true
+      },
+      "bytes": 26375,
+      "characterCost": "12",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.87,aresample=44100,atempo=1.1494252873563218,highpass=f=70,aecho=0.8:0.9:65|110:0.08|0.04,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-kraken-attack-v2.mp3"
+    },
+    {
+      "file": "boss-kraken-defeat-v2.mp3",
+      "text": "The storm is clearing...",
+      "role": "boss-kraken",
+      "voice": "Brian",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.48,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.86,
+        "use_speaker_boost": true
+      },
+      "bytes": 30137,
+      "characterCost": "24",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.87,aresample=44100,atempo=1.1494252873563218,highpass=f=70,aecho=0.8:0.9:65|110:0.08|0.04,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-kraken-defeat-v2.mp3"
+    },
+    {
+      "file": "boss-gale-awaken-v2.mp3",
+      "text": "Feel the rush of the cliff-winds!",
+      "role": "boss-gale",
+      "voice": "Harry",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.95,
+        "use_speaker_boost": true
+      },
+      "bytes": 32226,
+      "characterCost": "33",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.96,aresample=44100,atempo=1.0416666666666667,highpass=f=70,aecho=0.8:0.9:35:0.06,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-gale-awaken-v2.mp3"
+    },
+    {
+      "file": "boss-gale-attack-v2.mp3",
+      "text": "Whirlwind charge!",
+      "role": "boss-gale",
+      "voice": "Harry",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.95,
+        "use_speaker_boost": true
+      },
+      "bytes": 24285,
+      "characterCost": "17",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.96,aresample=44100,atempo=1.0416666666666667,highpass=f=70,aecho=0.8:0.9:35:0.06,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-gale-attack-v2.mp3"
+    },
+    {
+      "file": "boss-gale-defeat-v2.mp3",
+      "text": "The wild wind is a calm breeze now.",
+      "role": "boss-gale",
+      "voice": "Harry",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.45,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.95,
+        "use_speaker_boost": true
+      },
+      "bytes": 38078,
+      "characterCost": "35",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.96,aresample=44100,atempo=1.0416666666666667,highpass=f=70,aecho=0.8:0.9:35:0.06,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-gale-defeat-v2.mp3"
+    },
+    {
+      "file": "boss-volcano-awaken-v2.mp3",
+      "text": "The void awakens! Can your words seal the rift?",
+      "role": "boss-volcano",
+      "voice": "Adam",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.4,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.82,
+        "use_speaker_boost": true
+      },
+      "bytes": 72351,
+      "characterCost": "47",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.88,aresample=44100,atempo=1.1363636363636365,highpass=f=70,aecho=0.8:0.9:85|145:0.10|0.045,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-volcano-awaken-v2.mp3"
+    },
+    {
+      "file": "boss-volcano-attack-v2.mp3",
+      "text": "Prismatic void wave, strike!",
+      "role": "boss-volcano",
+      "voice": "Adam",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.4,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.82,
+        "use_speaker_boost": true
+      },
+      "bytes": 38914,
+      "characterCost": "28",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.88,aresample=44100,atempo=1.1363636363636365,highpass=f=70,aecho=0.8:0.9:85|145:0.10|0.045,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-volcano-attack-v2.mp3"
+    },
+    {
+      "file": "boss-volcano-defeat-v2.mp3",
+      "text": "The rift is sealed. Your words have restored the light!",
+      "role": "boss-volcano",
+      "voice": "Adam",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.4,
+        "similarity_boost": 0.75,
+        "style": 0.55,
+        "speed": 0.82,
+        "use_speaker_boost": true
+      },
+      "bytes": 70261,
+      "characterCost": "55",
+      "listeningVerified": false,
+      "processing": "asetrate=44100*0.88,aresample=44100,atempo=1.1363636363636365,highpass=f=70,aecho=0.8:0.9:85|145:0.10|0.045,loudnorm=I=-18:TP=-1.5:LRA=8",
+      "runtime": "assets/audio/boss/boss-volcano-defeat-v2.mp3"
+    }
+  ]
+}

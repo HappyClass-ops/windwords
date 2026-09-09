@@ -126,17 +126,16 @@ window.PipBossBattle = (() => {
     if (remaining > 0) return;
     const expected = generation;
     stopTimer();
-    root.classList.add('boss-attacking');
-    setSpriteState('attack');
+    root.classList.add('boss-windup');
     announce(profile.attack);
 
     Promise.resolve(onExpire?.(profile)).finally(() => {
       setTimeout(() => {
         if (expected !== generation) return;
-        root?.classList.remove('boss-attacking');
+        root?.classList.remove('boss-attacking','boss-windup');
         setSpriteState('idle');
         if (root?.classList.contains('active') && !holds.size) resetTimer();
-      }, 750);
+      }, 300);
     });
   }
 
@@ -218,7 +217,7 @@ window.PipBossBattle = (() => {
   function defeat() {
     if (!root) return;
     stopTimer();
-    root.classList.remove('boss-warning', 'boss-attacking');
+    root.classList.remove('boss-warning', 'boss-attacking','boss-windup');
     root.classList.add('boss-defeated');
     setSpriteState('defeat');
     setHealth(0, encounterTotal);
@@ -264,7 +263,7 @@ window.PipBossBattle = (() => {
         pausedRemaining = 0;
         timer = setInterval(drawTimer, 100);
         drawTimer();
-      } else if (!preserve || !deadline || deadline <= performance.now()) {
+      } else if (!preserve || (deadline && deadline <= performance.now())) {
         resetTimer();
       }
     }
@@ -272,5 +271,5 @@ window.PipBossBattle = (() => {
 
   document.addEventListener('visibilitychange', () => document.hidden ? hold('visibility') : release('visibility'));
 
-  return { mount, start, startCountdown:resetTimer, resetTimer, hit, defeat, stop, pause, resume, hold, release, announce, setSpriteState, setHealth };
+  return { get generation(){return generation;}, strike(){root?.classList.remove('boss-windup');root?.classList.add('boss-attacking');setSpriteState('attack');}, mount, start, startCountdown:resetTimer, resetTimer, hit, defeat, stop, pause, resume, hold, release, announce, setSpriteState, setHealth };
 })();
